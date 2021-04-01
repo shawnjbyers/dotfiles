@@ -15,7 +15,7 @@ dname="$(dirname -- "$0")" || {
   printf '%s: dirname failed\n' "$bname" >&2
   exit 1
 }
-if [ '' = "$dname" ]; then
+if [ 'x' = "x$dname" ]; then
   printf '%s: could not find dirname\n' "$bname" >&2
   exit 1
 fi
