@@ -73,26 +73,26 @@ if ! [ -d "${source_folder}" ]; then
   exit 1
 fi
 
-\ls -A1 -- "${source_folder}" | while read -r dirent_path; do
-  dirent_path="${source_folder}"/"${dirent_path}"
-  if ! [ -e "${dirent_path}" ]; then
-    printf '%s: could not find file %s\n' "${bname}" "${dirent_path}" >&2
+\ls -A1 -- "${source_folder}" | while read -r entry; do
+  entry_path="${source_folder}"/"${entry}"
+  if ! [ -e "${entry_path}" ]; then
+    printf '%s: could not find file %s\n' "${bname}" "${entry_path}" >&2
     exit 1
   fi
 
-  if [ -f "${dirent_path}" ]; then
-    cp -- "${dirent_path}" "${tval}" || {
+  if [ -f "${entry_path}" ]; then
+    cp -- "${entry_path}" "${tval}" || {
       printf '%s: cp failed\n' "${bname}" >&2
       exit 1
     }
-  elif [ -d "${dirent_path}" ]; then
-    "${dirent_path}"/install -s "${dirent_path}" -t "${tval}" || {
-      printf '%s: recursive install failed in %s\n' "${bname}" "${dirent_path}" >&2
+  elif [ -d "${entry_path}" ]; then
+    "${entry_path}"/install -s "${entry_path}" -t "${tval}" || {
+      printf '%s: recursive install failed in %s\n' "${bname}" "${entry_path}" >&2
       exit 1
     }
   else
     printf '%s: found irregular directory entry %s\n' \
-      "${bname}" "${dirent_path}" >&2
+      "${bname}" "${entry_path}" >&2
     exit 1
   fi
 done || exit 1
