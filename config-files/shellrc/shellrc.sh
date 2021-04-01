@@ -31,7 +31,10 @@ if is_interactive; then
     set -o vi # set vi keybindings
     export SHELL='/bin/bash'
     shopt -s extglob # enable extended globbing
-    shopt -s checkjobs # bash lists the status of stopped or running jobs before exiting
+
+    # bash lists the status of stopped or running jobs before exiting
+    shopt -s checkjobs
+
     PS1='\[\033[01;32m\][\[\033[01;37m\]\W\[\033[01;32m\]]\$\[\033[00m\] '
     PS2='> '
     PS3='#? '
@@ -85,8 +88,10 @@ if is_interactive; then
     bindkey -M vicmd z edit-command-line
 
     # custom tab-completion settings
-    zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
-    zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'l:|=* r:|=*'
+    zstyle ':completion:*' completer _expand _complete _ignored \
+      _correct _approximate
+    zstyle ':completion:*' matcher-list '' \
+      'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'l:|=* r:|=*'
     zstyle ':completion:*' max-errors 3
     zstyle :compinstall filename ~/.zshrc
 
