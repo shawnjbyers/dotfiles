@@ -4,25 +4,25 @@ set -u
 
 bname="$(basename -- "$0")" || {
   bname="$0"
-  printf '%s: basename failed\n' "$bname" >&2
+  printf '%s: basename failed\n' "${bname}" >&2
   exit 1
 }
 
 print_usage() (
-printf 'usage: %s -s source-dir -t target-dir\n' "$bname" >&2
+printf 'usage: %s -s source-dir -t target-dir\n' "${bname}" >&2
 )
 
 sflag=''
 tflag=''
 while getopts 's:t:' name; do
-  case "$name" in
+  case "${name}" in
     s)
       sflag=1
-      sval="$OPTARG"
+      sval="${OPTARG}"
       ;;
     t)
       tflag=1
-      tval="$OPTARG"
+      tval="${OPTARG}"
       ;;
     *)
       print_usage

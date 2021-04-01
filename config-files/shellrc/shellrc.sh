@@ -40,7 +40,7 @@ if is_interactive; then
     PS3='#? '
     PS4='+ '
 
-    if [ "x$user_id" = 'x0' ]; then
+    if [ "x${user_id}" = 'x0' ]; then
       # root
       export HISTSIZE=50 # in-memory history 50 lines
       export HISTFILESIZE=0 # disable on-disk history
@@ -98,7 +98,7 @@ if is_interactive; then
     # custom prompt
     PROMPT='%F{green}[%f%B%F{white}%1/%f%b%F{green}]%#%f '
 
-    if [ "x$user_id" = 'x0' ]; then
+    if [ "x${user_id}" = 'x0' ]; then
       # root
       HISTSIZE=50 # in-memory history 50 lines
       SAVEHIST=0 # disable on-disk history
@@ -112,7 +112,7 @@ if is_interactive; then
     fi
   fi
 
-  if [ "x$user_id" = 'x0' ]; then
+  if [ "x${user_id}" = 'x0' ]; then
     # root
     alias emerge='emerge --ask --quiet'
   else
@@ -168,8 +168,8 @@ if is_interactive; then
     local bname='rmdot'
 
     if [ $# -ne 0 ]; then
-      printf 'usage: %s' "$bname" >&2
-      printf '%s: delete the current directory' "$bname" >&2
+      printf 'usage: %s' "${bname}" >&2
+      printf '%s: delete the current directory' "${bname}" >&2
       return 2
     fi
 
@@ -183,32 +183,32 @@ if is_interactive; then
     local bname='inewtest'
 
     if [ $# -ne 0 ]; then
-      printf 'usage: %s' "$bname" >&2
-      printf '%s: make and enter a new test directory\n' "$bname" >&2
+      printf 'usage: %s' "${bname}" >&2
+      printf '%s: make and enter a new test directory\n' "${bname}" >&2
       return 2
     fi
 
     local test_dir=~/Desktop/test
-    [ -d "$test_dir" ] || {
-      printf '%s: could not find test directory %s\n' "$bname" "$test_dir" >&2
+    [ -d "${test_dir}" ] || {
+      printf '%s: could not find test directory %s\n' "${bname}" "${test_dir}" >&2
       return 2
     }
 
     local i=0
     while :; do
-      local new_dir="$test_dir"/"$i"'test'
-      if [ -e "$new_dir" ]; then
+      local new_dir="${test_dir}"/"${i}"'test'
+      if [ -e "${new_dir}" ]; then
         i=$((i + 1))
         continue
       fi
 
-      mkdir -- "$new_dir" || {
-        printf '%s: could not make directory %s\n' "$bname" "$new_dir" >&2
+      mkdir -- "${new_dir}" || {
+        printf '%s: could not make directory %s\n' "${bname}" "${new_dir}" >&2
         return 1
       }
 
-      cd -- "$new_dir" || {
-        printf '%s: could not cd to directory %s\n' "$bname" "$new_dir" >&2
+      cd -- "${new_dir}" || {
+        printf '%s: could not cd to directory %s\n' "${bname}" "${new_dir}" >&2
         return 1
       }
 
@@ -219,23 +219,23 @@ if is_interactive; then
   mkcd() {
     local bname='mkcd'
     if [ 1 -ne $# ]; then
-      printf 'usage: %s <new-directory-name>\n' "$bname" >&2
+      printf 'usage: %s <new-directory-name>\n' "${bname}" >&2
       return 2
     fi
 
     new_dir="$1"
 
-    if [ "x$new_dir" = 'x-' ]; then
+    if [ "x${new_dir}" = 'x-' ]; then
       new_dir='./-'
     fi
 
-    mkdir -- "$new_dir" || {
-      printf '%s: could not make directory %s\n' "$bname" "$new_dir" >&2
+    mkdir -- "${new_dir}" || {
+      printf '%s: could not make directory %s\n' "${bname}" "${new_dir}" >&2
       return 1
     }
 
-    cd -- "$new_dir" || {
-      printf '%s: could not cd to directory %s\n' "$bname" "$new_dir" >&2
+    cd -- "${new_dir}" || {
+      printf '%s: could not cd to directory %s\n' "${bname}" "${new_dir}" >&2
       return 1
     }
   }
@@ -243,7 +243,7 @@ if is_interactive; then
   using_coreutils() (
   bname='using_coreutils'
   if [ $# -ne 1 ]; then
-    printf 'usage: %s <coreutil-type>\n' "$bname" >&2
+    printf 'usage: %s <coreutil-type>\n' "${bname}" >&2
     exit 2
   fi
 
@@ -255,7 +255,7 @@ if is_interactive; then
     exit 0
     ls
   else
-    printf '%s: unrecognized coreutil type %s\n' "$bname" "$1" >&2
+    printf '%s: unrecognized coreutil type %s\n' "${bname}" "$1" >&2
     exit 2
   fi
   )
@@ -338,7 +338,7 @@ if is_interactive; then
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
 
   # useful for making your shell recognize a newly installed executable
-  alias rereadpath='PATH="$PATH"'
+  alias rereadpath='PATH="${PATH}"'
 
   if command -v 'rlwrap' > /dev/null 2>&1; then
     alias node='NODE_NO_READLINE=1 rlwrap node'
@@ -352,8 +352,8 @@ if is_interactive; then
       /usr/share/zsh/site-functions/zsh-syntax-highlighting.zsh \
       /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     do
-      if [ -f "$zsh_syntax_hlf" ]; then
-        . "$zsh_syntax_hlf"
+      if [ -f "${zsh_syntax_hlf}" ]; then
+        . "${zsh_syntax_hlf}"
         break
       fi
     done

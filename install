@@ -4,25 +4,25 @@ set -eu
 
 bname="$(basename -- "$0")" || {
   bname="$0"
-  printf '%s: basename failed\n' "$bname" >&2
+  printf '%s: basename failed\n' "${bname}" >&2
   exit 1
 }
 
 print_usage() (
-printf 'usage: %s [-s source-dir] [-t target-dir]\n' "$bname" >&2
+printf 'usage: %s [-s source-dir] [-t target-dir]\n' "${bname}" >&2
 )
 
 sflag=''
 tflag=''
 while getopts 's:t:' name; do
-  case "$name" in
+  case "${name}" in
     s)
       sflag=1
-      sval="$OPTARG"
+      sval="${OPTARG}"
       ;;
     t)
       tflag=1
-      tval="$OPTARG"
+      tval="${OPTARG}"
       ;;
     *)
       print_usage
@@ -37,63 +37,63 @@ if [ 0 -ne $# ]; then
   exit 2
 fi
 
-if [ -z "$sflag" ]; then
+if [ -z "${sflag}" ]; then
   sval="$(dirname -- "$0")" || {
-    printf '%s: dirname failed\n' "$bname" >&2
+    printf '%s: dirname failed\n' "${bname}" >&2
     exit 1
   }
   
-  if [ -z "$sval" ]; then
-    printf '%s: could not find dirname\n' "$bname" >&2
+  if [ -z "${sval}" ]; then
+    printf '%s: could not find dirname\n' "${bname}" >&2
     exit 1
   fi
 fi
 
-if [ -z "$tflag" ]; then
+if [ -z "${tflag}" ]; then
   if [ -z "${HOME-}" ]; then
-    printf '%s: could not find HOME directory\n' "$bname" >&2
+    printf '%s: could not find HOME directory\n' "${bname}" >&2
     exit 1
   fi
-  tval="$HOME"
+  tval="${HOME}"
 fi
 
-if ! [ -d "$sval" ]; then
-  printf '%s: %s is not a directory\n' "$bname" "$sval" >&2
+if ! [ -d "${sval}" ]; then
+  printf '%s: %s is not a directory\n' "${bname}" "${sval}" >&2
   exit 1
 fi
-if ! [ -d "$tval" ]; then
-  printf '%s: %s is not a directory\n' "$bname" "$tval" >&2
-  exit 1
-fi
-
-source_folder="$sval"'/config-files'
-if ! [ -d "$source_folder" ]; then
-  printf '%s: %s is not a directory\n' "$bname" "$source_folder" >&2
+if ! [ -d "${tval}" ]; then
+  printf '%s: %s is not a directory\n' "${bname}" "${tval}" >&2
   exit 1
 fi
 
-\ls -A1 -- "$source_folder" | while read -r dirent_path; do
-  dirent_path="$source_folder"/"$dirent_path"
-  if ! [ -e "$dirent_path" ]; then
-    printf '%s: could not find file %s\n' "$bname" "$dirent_path" >&2
+source_folder="${sval}"'/config-files'
+if ! [ -d "${source_folder}" ]; then
+  printf '%s: %s is not a directory\n' "${bname}" "${source_folder}" >&2
+  exit 1
+fi
+
+\ls -A1 -- "${source_folder}" | while read -r dirent_path; do
+  dirent_path="${source_folder}"/"${dirent_path}"
+  if ! [ -e "${dirent_path}" ]; then
+    printf '%s: could not find file %s\n' "${bname}" "${dirent_path}" >&2
     exit 1
   fi
 
-  if [ -f "$dirent_path" ]; then
-    cp -- "$dirent_path" "$tval" || {
-      printf '%s: cp failed\n' "$bname" >&2
+  if [ -f "${dirent_path}" ]; then
+    cp -- "${dirent_path}" "${tval}" || {
+      printf '%s: cp failed\n' "${bname}" >&2
       exit 1
     }
-  elif [ -d "$dirent_path" ]; then
-    "$dirent_path"/install -s "$dirent_path" -t "$tval" || {
-      printf '%s: recursive install failed in %s\n' "$bname" "$dirent_path" >&2
+  elif [ -d "${dirent_path}" ]; then
+    "${dirent_path}"/install -s "${dirent_path}" -t "${tval}" || {
+      printf '%s: recursive install failed in %s\n' "${bname}" "${dirent_path}" >&2
       exit 1
     }
   else
     printf '%s: found irregular directory entry %s\n' \
-      "$bname" "$dirent_path" >&2
+      "${bname}" "${dirent_path}" >&2
     exit 1
   fi
 done || exit 1
 
-printf '%s: installation successful\n' "$bname" >&2
+printf '%s: installation successful\n' "${bname}" >&2
