@@ -195,10 +195,6 @@ if is_interactive; then
       return 2
     fi
 
-    user_approve 'Would you like to remove the current directory?' || {
-      return 1
-    }
-
     local current_dir
     current_dir="$(pwd)" || return 1
     cd .. || return 1
