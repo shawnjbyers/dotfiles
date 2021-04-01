@@ -308,7 +308,7 @@ if is_interactive; then
   #       human readable sizes in long mode (aka, say ``4.0K''
   #       instead of ``4096'')
   # # --color=auto: colorize output when printing to a terminal
-  # # --time-style='+%Y-%m-%dT%T':
+  # # --time-style=+'%Y-%m-%dT%T':
   #                                use a special date format in long
   #                                mode, it looks like ``2020-08-21
   #                                23:14:39''
@@ -328,8 +328,8 @@ if is_interactive; then
     alias grep='grep -i -I --color=auto'
 
     # compliant: ISO 8601
-    alias ls='ls -F -A -h --color=auto --time-style='\''+%Y-%m-%dT%T'\'
-    alias lsna='command ls -F -h --color=auto --time-style='\''+%Y-%m-%dT%T'\'
+    alias ls='ls -F -A -h --color=auto --time-style=+'\''%Y-%m-%dT%T'\'
+    alias lsna='command ls -F -h --color=auto --time-style=+'\''%Y-%m-%dT%T'\'
 
   elif using_coreutils macos; then
     alias diff='diff'
@@ -352,7 +352,7 @@ if is_interactive; then
 
   # posix-compliant: POSIX.1-2008
   # compliant: ISO 8601
-  alias date='date '\''+%Y-%m-%dT%T'\'
+  alias date='date +'\''%Y-%m-%dT%T'\'
 
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
 
