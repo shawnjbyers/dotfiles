@@ -35,7 +35,6 @@ for shell in posh dash zsh bash; do
 done
 
 for shell in zsh bash; do
-  printf '%s -i %s\n' "${shell}" "${fname}"
   /bin/"${shell}" -i -- "${fname}" || {
     printf '%s: interactive shell %s failed\n' "${bname}" "${shell}" >&2
     exit 1
