@@ -1,0 +1,8 @@
+# disables the delay after pressing <Escape> or ^[
+set keyseq-timeout 0.01
+
+# enables vi keyboard shortcuts
+set editing-mode vi
+
+# enables case insensitive completion
+set completion-ignore-case on

@@ -1,0 +1,168 @@
+set encoding=utf-8
+set background=dark
+
+" enable syntax highlighting
+syntax on
+
+" enable absolute line number for current line and relative line numbers for
+" all other lines
+set number
+set relativenumber
+
+" disable unnecessary indentation rules
+set noautoindent
+set nosmartindent
+set nocindent
+
+" use two spaces, not tabs
+set expandtab
+set shiftwidth=2
+set shiftround
+set tabstop=2
+set softtabstop=2
+
+" lines should wrap not get cut off
+set wrap
+
+" don't highlight all matches of last search
+set nohlsearch
+
+" show where current search matches as it's being typed
+set incsearch
+
+" ignore case while searching
+set ignorecase
+
+" if a file changes, automatically read in the new version. this allows the
+" ``chmod'' binding below to work without an extraneous message
+set autoread
+
+" allow timeout on things like <Leader>d but not on <Esc>O
+set timeoutlen=1000 ttimeoutlen=0
+
+filetype on " enable filetype detection
+filetype plugin on " enable loading filetype plugins
+filetype indent on " enable filetype-based indentation
+
+" if you type ``:list'', then it will display the tabs
+set listchars=tab:\\t
+
+" show as much of the current line as possible if it doesn't fit on the screen
+set display=lastline
+
+" display partially-finished, normal-mode commands at the bottom right
+set showcmd
+
+
+" TODO: make all these use the FileType events instead of BufEnter
+" TODO: put all these in an augroup
+
+" autoinsert a newline when a line gets too long
+autocmd BufEnter *.txt set textwidth=74
+
+" do not round indentation to a multiple of 'shiftwidth'
+autocmd BufEnter *.rkt,*.lisp,*.cl,*.el,*.ss,*.scm set noshiftround
+
+" make sure tabs are real tabs and not expanded into spaces
+autocmd BufEnter Makefile,*.asm,*.s,*.S set noexpandtab
+
+" make sure tabs are real tabs and not expanded into spaces
+autocmd BufEnter Makefile,*.asm,*.s,*.S set tabstop=8
+
+autocmd BufEnter *.c,*.asm,*.s,*.S map <CR> :w\|:!make run<CR>
+autocmd BufEnter *.c,*.asm,*.s,*.S map <Tab> :w\|:!make test<CR>
+
+autocmd BufEnter *.c map <BS> :w\|:!gcc '%' -o '%:r'\|./'%:r'<CR>
+" TODO: this will fail if the filename has a single quote or if it is an
+" absolute path
+
+autocmd BufEnter *.rs map <CR> :w\|:!cargo -q run<CR>
+autocmd BufEnter *.rs map <Tab> :w\|:!cargo -q test<CR>
+autocmd BufEnter *.java map <CR> :w\|:!mvn -q run<CR>
+autocmd BufEnter *.java map <Tab> :w\|:!mvn -q test<CR>
+autocmd BufEnter *.java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
+autocmd BufEnter *.txt map <CR> :w<CR>
+autocmd BufEnter *.tex,*.latex map <CR> :w\|:!make run<CR><CR>
+autocmd BufEnter *.latex map <BS> :w\|:!pdflatex '%'<CR><CR>
+" TODO: support more pdf readers
+autocmd BufEnter *.latex map <Tab> :w\|:!(zathura '%:r'.pdf &)<CR><CR>
+autocmd BufEnter *.stp,*.d,*.bt map <CR> :w\|:call ExecFile(@%, 1)<CR>
+
+" this function executes the file currently being edited if the file exists
+function ExecFile(filepath, shouldUseSudo)
+  if len(a:filepath) == 0
+    echom "no filename"
+    return 1
+  endif
+
+  let cmd = "!"
+
+  if a:shouldUseSudo
+    let cmd = l:cmd . "sudo "
+  endif
+
+  if a:filepath[0] != "/"
+    let cmd = l:cmd . "./"
+  endif
+
+  "for c in a:filepath
+  "  if c == "'"
+  "    TODO: replace ' with '\''
+  "  endif
+  "endfor
+
+  let cmd = l:cmd . "'" . a:filepath . "'"
+  echom l:cmd
+  execute l:cmd
+  return 0
+endfunction
+
+" these mappings save the current file
+nnoremap <C-S> :w<CR>
+inoremap <C-S> <C-O>:w<CR>
+
+" this mapping inserts the date and time
+" posix-compliant: POSIX.1-2008
+nnoremap <Leader>d :r !date +'\%Y-\%m-\%d \%T'<CR>kJ
+
+" this mapping makes the current file executable
+" posix-compliant: POSIX.1-2008
+nnoremap <Leader>x :w\|:silent !chmod u+x '%'<CR>:redraw!<CR>
+" Note: ``silent'' suppresses messages and ``redraw'' redraws the screen. the
+" ``set autoread'' found earlier suppresses a vim warning
+" TODO: this ^^ will fail when the filename (%) has a single quote in it.
+" there might be no way to fix this with pure VimScript
+
+" executes the current file
+nnoremap <Leader>e :w\|:call ExecFile(@%, 0)<CR>
+
+" executes the current file
+nnoremap <Leader>s :filetype detect<CR>
+
+nnoremap <Leader>ma :w\|!make<CR>
+nnoremap <Leader>mt :w\|!make test<CR>
+nnoremap <Leader>mr :w\|!make run<CR>
+
+" shortcuts to start remapping various keys
+nnoremap <Leader><CR> :nnoremap <lt>CR> :w\\|:!
+nnoremap <Leader><BS> :nnoremap <lt>BS> :w\\|:!
+nnoremap <Leader><Del> :nnoremap <lt>Del> :w\\|:!
+nnoremap <Leader><Tab> :nnoremap <lt>Tab> :w\\|:!
+
+
+function IsRoot()
+  let userid = system("id -u")
+  if userid == "0\n"
+    return 1
+  else
+    return 0
+  endif
+endfunction
+
+if IsRoot()
+  " disable viminfo (see :help 'viminfo')
+  set viminfo='0,f0,<0,:0,@0,/0
+else
+  " enable viminfo with certain values (see :help 'viminfo')
+  set viminfo='100,<50,s10,h
+endif
