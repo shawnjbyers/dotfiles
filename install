@@ -38,10 +38,11 @@ if [ 0 -ne $# ]; then
 fi
 
 if [ -z "${sflag}" ]; then
-  sval="$(dirname -- "$0")" || {
+  sval="$(dirname -- "$0" && printf 'x')" || {
     printf '%s: dirname failed\n' "${bname}" >&2
     exit 1
   }
+  sval="${sval%??}" # strip trailing \nx
   
   if [ -z "${sval}" ]; then
     printf '%s: could not find dirname\n' "${bname}" >&2

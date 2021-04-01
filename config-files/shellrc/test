@@ -11,10 +11,11 @@ bname="$(basename -- "$0")" || {
   exit 1
 }
 
-dname="$(dirname -- "$0")" || {
+dname="$(dirname -- "$0" && printf 'x')" || {
   printf '%s: dirname failed\n' "${bname}" >&2
   exit 1
 }
+dname="${dname%??}" # strip trailing \nx
 if [ 'x' = "x${dname}" ]; then
   printf '%s: could not find dirname\n' "${bname}" >&2
   exit 1
