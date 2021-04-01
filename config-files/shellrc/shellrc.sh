@@ -1,4 +1,4 @@
-#!/bin/nologin
+#!/dev/null
 
 is_bash() (
 [ -z "${BASH_VERSION-}" ] || exit 0
