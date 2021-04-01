@@ -59,7 +59,7 @@ set showcmd
 " TODO: put all these in an augroup
 
 " autoinsert a newline when a line gets too long
-autocmd BufEnter *.txt set textwidth=74
+autocmd BufEnter *.txt set textwidth=72
 
 " do not round indentation to a multiple of 'shiftwidth'
 autocmd BufEnter *.rkt,*.lisp,*.cl,*.el,*.ss,*.scm set noshiftround
