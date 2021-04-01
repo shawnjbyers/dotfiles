@@ -28,14 +28,24 @@ fname="${dname}"'/shellrc.sh'
 }
 
 for shell in posh dash zsh bash; do
-  /bin/"${shell}" -- "${fname}" || {
+  shell_path="$(command -v -- "${shell}")" || {
+    printf '%s: could not find shell %s\n' "${bname}" "${shell}" >&2
+    continue
+  }
+
+  "${shell_path}" -- "${fname}" || {
     printf '%s: non-interactive shell %s failed\n' "${bname}" "${shell}" >&2
     exit 1
   }
 done
 
 for shell in zsh bash; do
-  /bin/"${shell}" -i -- "${fname}" || {
+  shell_path="$(command -v -- "${shell}")" || {
+    printf '%s: could not find shell %s\n' "${bname}" "${shell}" >&2
+    continue
+  }
+
+  "${shell_path}" -i -- "${fname}" || {
     printf '%s: interactive shell %s failed\n' "${bname}" "${shell}" >&2
     exit 1
   }
