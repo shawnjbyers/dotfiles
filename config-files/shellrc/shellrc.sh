@@ -370,10 +370,6 @@ if is_interactive; then
   
   alias shellcheck='shellcheck --enable=all --severity=style --check-sourced --external-sources'
 
-  # posix-compliant: POSIX.1-2008
-  # compliant: ISO 8601
-  alias date='date +'\''%Y-%m-%dT%T'\'
-
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
 
   # useful for making your shell recognize a newly installed executable
