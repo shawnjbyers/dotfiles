@@ -251,6 +251,10 @@ if is_interactive; then
 
     new_dir="$1"
 
+    if [ "x$new_dir" = 'x-' ]; then
+      new_dir='./-'
+    fi
+
     mkdir -- "$new_dir" || {
       printf '%s: could not make directory %s\n' "$bname" "$new_dir" >&2
       return 1
