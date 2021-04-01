@@ -312,19 +312,19 @@ if is_interactive; then
 
   if using_coreutils gnu; then
     alias diff='diff --color=auto'
-    alias grep='grep -E -i -I --color=auto'
+    alias grep='grep -i -I --color=auto'
     alias ls='ls -F -A -h --color=auto --time-style='\''+%Y-%m-%d %T'\'
     alias lsna='command ls -F -h --color=auto --time-style='\''+%Y-%m-%d %T'\'
   elif using_coreutils macos; then
     alias diff='diff'
-    alias grep='grep -E -i -I --color=auto'
+    alias grep='grep -i -I --color=auto'
     alias ls='ls -F -A'
     alias ls='ls -F -A -h -e -G '\''-@'\'
     alias lsna='command ls -F -h -e -G '\''-@'\'
   else
     # using POSIX
     alias diff='diff'
-    alias grep='grep -E -i'
+    alias grep='grep -i'
     alias ls='ls -F -A'
     alias lsna='command ls -F'
   fi
