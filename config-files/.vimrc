@@ -72,7 +72,7 @@ autocmd BufEnter Makefile,*.asm,*.s,*.S set tabstop=8
 autocmd BufEnter *.c,*.asm,*.s,*.S map <CR> :w\|:!make run<CR>
 autocmd BufEnter *.c,*.asm,*.s,*.S map <Tab> :w\|:!make test<CR>
 
-autocmd BufEnter *.c map <BS> :w\|:!gcc '%' -o '%:r'\|./'%:r'<CR>
+autocmd BufEnter *.c map <BS> :w\|:!cc -Wall -Wextra -Werror -g -O0 -o '%:r' '%' && ./'%:r'<CR>
 " TODO: this will fail if the filename has a single quote or if it is an
 " absolute path
 
