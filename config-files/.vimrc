@@ -83,9 +83,9 @@ autocmd BufEnter *.java map <Tab> :w\|:!mvn -q test<CR>
 autocmd BufEnter *.java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
 autocmd BufEnter *.txt map <CR> :w<CR>
 autocmd BufEnter *.tex,*.latex map <CR> :w\|:!make run<CR><CR>
-autocmd BufEnter *.latex map <BS> :w\|:!pdflatex '%'<CR><CR>
+autocmd BufEnter *.latex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
 " TODO: support more pdf readers
-autocmd BufEnter *.latex map <Tab> :w\|:!(zathura '%:r'.pdf &)<CR><CR>
+autocmd BufEnter *.latex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
 autocmd BufEnter *.stp,*.d,*.bt map <CR> :w\|:call ExecFile(@%, 1)<CR>
 
 " this function executes the file currently being edited if the file exists
