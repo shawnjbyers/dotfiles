@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -u
+set -eu
 
 bname="$(basename -- "$0")" || {
   bname="$0"

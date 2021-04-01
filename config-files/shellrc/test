@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 if [ 0 -ne $# ]; then
   printf '%s: bad usage\n' "$0" >&2
   exit 2

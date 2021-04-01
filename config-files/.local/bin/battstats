@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 warn() (
 printf '%s: %s\n' "${bname}" "$*" >&2
 )
