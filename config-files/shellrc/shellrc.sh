@@ -354,7 +354,7 @@ if is_interactive; then
   alias please='sudo'
   alias plz='sudo'
   
-  alias shellcheck='shellcheck --enable=all --severity=style --check-sourced --external-sources'
+  alias shellcheck='shellcheck --enable=all --severity=info --check-sourced --external-sources'
   alias date='date '\''+%Y-%m-%d %T'\' # posix-compliant: POSIX.1-2008
 
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
