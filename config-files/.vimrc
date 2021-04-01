@@ -46,6 +46,7 @@ filetype indent on " enable filetype-based indentation
 
 " if you type ``:list'', then it will display the tabs
 set listchars=tab:\\t
+set list
 
 " show as much of the current line as possible if it doesn't fit on the screen
 set display=lastline
