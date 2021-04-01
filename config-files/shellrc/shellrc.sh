@@ -24,7 +24,7 @@ fi
 if is_interactive; then
   user_id="$(id -u)" || {
     user_id='0'
-    echo 'shellrc: id failed'
+    echo 'shellrc: id failed' >&2
   }
 
   if is_bash; then
@@ -33,7 +33,7 @@ if is_interactive; then
       if SHELL="$(command -v bash)"; then
         export SHELL
       else
-        echo 'shellrc: could not find bash'
+        echo 'shellrc: could not find bash' >&2
       fi
     fi
     shopt -s extglob # enable extended globbing
@@ -62,7 +62,7 @@ if is_interactive; then
       if SHELL="$(command -v zsh)"; then
         export SHELL
       else
-        echo 'shellrc: could not find zsh'
+        echo 'shellrc: could not find zsh' >&2
       fi
     fi
 
@@ -168,7 +168,7 @@ if is_interactive; then
       export EDITOR
       export VISUAL="${EDITOR}"
     else
-      echo 'shellrc: could not find vim'
+      echo 'shellrc: could not find vim' >&2
     fi
   fi
 
