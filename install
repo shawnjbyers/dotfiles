@@ -12,6 +12,51 @@ print_usage() (
 printf 'usage: %s [-s source-dir] [-t target-dir]\n' "${bname}" >&2
 )
 
+install_directory() (
+if [ $# -ne 2 ]; then
+  printf '%s: internal error: install_directory: bad usage\n' "${bname}" >&2
+  exit 3
+fi
+
+source_folder="$1"
+dest_folder="$2"
+
+ls -A1 -- "${source_folder}" | while read -r entry; do
+  entry_path="${source_folder}"/"${entry}"
+  if ! [ -e "${entry_path}" ]; then
+    printf '%s: could not find file %s\n' "${bname}" "${entry_path}" >&2
+    exit 1
+  fi
+
+  if [ -f "${entry_path}" ]; then
+    cp -- "${entry_path}" "${dest_folder}/${entry}" || {
+      printf '%s: cp failed\n' "${bname}" >&2
+      exit 1
+    }
+  elif [ -d "${entry_path}" ]; then
+    if [ -e "${entry_path}"/.recursive-install ]; then
+      "${entry_path}"/install -s "${entry_path}" -t "${dest_folder}" || {
+        printf '%s: recursive install failed in %s\n' "${bname}" "${entry_path}" >&2
+        exit 1
+      }
+    else
+      new_dest_folder="${dest_folder}/${entry}"
+      if ! [ -d "${new_dest_folder}" ]; then
+        mkdir -- "${new_dest_folder}" || {
+          printf '%s: %s: copying directory failed\n' "${bname}" "${new_dest_folder}" >&2
+          exit 1
+        }
+      fi
+      install_directory "${entry_path}" "${new_dest_folder}" || exit $?
+    fi
+  else
+    printf '%s: found irregular directory entry %s\n' \
+      "${bname}" "${entry_path}" >&2
+    exit 1
+  fi
+done || exit $?
+)
+
 sflag=''
 tflag=''
 while getopts 's:t:' name; do
@@ -73,28 +118,6 @@ if ! [ -d "${source_folder}" ]; then
   exit 1
 fi
 
-\ls -A1 -- "${source_folder}" | while read -r entry; do
-  entry_path="${source_folder}"/"${entry}"
-  if ! [ -e "${entry_path}" ]; then
-    printf '%s: could not find file %s\n' "${bname}" "${entry_path}" >&2
-    exit 1
-  fi
-
-  if [ -f "${entry_path}" ]; then
-    cp -- "${entry_path}" "${tval}" || {
-      printf '%s: cp failed\n' "${bname}" >&2
-      exit 1
-    }
-  elif [ -d "${entry_path}" ]; then
-    "${entry_path}"/install -s "${entry_path}" -t "${tval}" || {
-      printf '%s: recursive install failed in %s\n' "${bname}" "${entry_path}" >&2
-      exit 1
-    }
-  else
-    printf '%s: found irregular directory entry %s\n' \
-      "${bname}" "${entry_path}" >&2
-    exit 1
-  fi
-done || exit 1
+install_directory "${source_folder}" "${tval}" || exit $?
 
 printf '%s: installation successful\n' "${bname}" >&2
