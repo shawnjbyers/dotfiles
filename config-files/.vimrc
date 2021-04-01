@@ -124,7 +124,8 @@ inoremap <C-S> <C-O>:w<CR>
 
 " this mapping inserts the date and time
 " posix-compliant: POSIX.1-2008
-nnoremap <Leader>d :r !date +'\%Y-\%m-\%d \%T'<CR>kJ
+" compliant: ISO 8601
+nnoremap <Leader>d :r !date +'\%Y-\%m-\%dT\%T'<CR>kJ
 
 " this mapping makes the current file executable
 " posix-compliant: POSIX.1-2008

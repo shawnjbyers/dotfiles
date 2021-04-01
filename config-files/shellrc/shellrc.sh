@@ -290,12 +290,12 @@ if is_interactive; then
   # # -A:
   #       list all files, even hidden files, except for ``.'' and
   #       ``..''
-  # GNU coreutils: ls -F -A -h --color=auto --time-style='%Y-%m-%d %T'
+  # GNU coreutils: ls -F -A -h --color=auto --time-style='%Y-%m-%dT%T'
   # # -h:
   #       human readable sizes in long mode (aka, say ``4.0K''
   #       instead of ``4096'')
   # # --color=auto: colorize output when printing to a terminal
-  # # --time-style='+%Y-%m-%d %T':
+  # # --time-style='+%Y-%m-%dT%T':
   #                                use a special date format in long
   #                                mode, it looks like ``2020-08-21
   #                                23:14:39''
@@ -313,8 +313,11 @@ if is_interactive; then
   if using_coreutils gnu; then
     alias diff='diff --color=auto'
     alias grep='grep -i -I --color=auto'
-    alias ls='ls -F -A -h --color=auto --time-style='\''+%Y-%m-%d %T'\'
-    alias lsna='command ls -F -h --color=auto --time-style='\''+%Y-%m-%d %T'\'
+
+    # compliant: ISO 8601
+    alias ls='ls -F -A -h --color=auto --time-style='\''+%Y-%m-%dT%T'\'
+    alias lsna='command ls -F -h --color=auto --time-style='\''+%Y-%m-%dT%T'\'
+
   elif using_coreutils macos; then
     alias diff='diff'
     alias grep='grep -i -I --color=auto'
@@ -333,7 +336,10 @@ if is_interactive; then
   alias plz='sudo'
   
   alias shellcheck='shellcheck --enable=all --severity=style --check-sourced --external-sources'
-  alias date='date '\''+%Y-%m-%d %T'\' # posix-compliant: POSIX.1-2008
+
+  # posix-compliant: POSIX.1-2008
+  # compliant: ISO 8601
+  alias date='date '\''+%Y-%m-%dT%T'\'
 
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
 
