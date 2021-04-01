@@ -132,7 +132,9 @@ if is_interactive; then
   ### BASIC SETUP ###
 
   umask u=rwx,go= # restrictive creation mode
-  stty -ixon # disable ctrl+s on terminals
+  if [ -t 0 ]; then
+    stty -ixon # disable ctrl+s on terminals
+  fi
 
   export EDITOR='/usr/bin/vim'
   export VISUAL='/usr/bin/vim'
