@@ -29,7 +29,13 @@ if is_interactive; then
 
   if is_bash; then
     set -o vi # set vi keybindings
-    export SHELL='/bin/bash'
+    if command -v bash > /dev/null 2>&1; then
+      if SHELL="$(command -v bash)"; then
+        export SHELL
+      else
+        echo 'shellrc: could not find bash'
+      fi
+    fi
     shopt -s extglob # enable extended globbing
 
     # bash lists the status of stopped or running jobs before exiting
@@ -52,7 +58,13 @@ if is_interactive; then
       export HISTFILESIZE=10000
     fi
   elif is_zsh; then
-    export SHELL='/bin/zsh'
+    if command -v zsh > /dev/null 2>&1; then
+      if SHELL="$(command -v zsh)"; then
+        export SHELL
+      else
+        echo 'shellrc: could not find zsh'
+      fi
+    fi
 
     # equivalent of bash ``help'' command
     if alias run-help > /dev/null 2>&1; then
@@ -151,8 +163,14 @@ if is_interactive; then
     stty -ixon # disable ctrl+s on terminals
   fi
 
-  export EDITOR='/usr/bin/vim'
-  export VISUAL='/usr/bin/vim'
+  if command -v vim > /dev/null 2>&1; then
+    if EDITOR="$(command -v vim)"; then
+      export EDITOR
+      export VISUAL="${EDITOR}"
+    else
+      echo 'shellrc: could not find vim'
+    fi
+  fi
 
   # give nice colored output with GNU ls
   if command -v dircolors > /dev/null 2>&1; then
