@@ -3,3 +3,6 @@
 	br = branch
 	ci = commit
 	st = status
+	last = log -1 HEAD
+[init]
+	defaultBranch = main
