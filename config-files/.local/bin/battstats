@@ -1,0 +1,93 @@
+#!/bin/sh
+
+warn() (
+printf '%s: %s\n' "${bname}" "$*" >&2
+)
+
+bname="$(basename -- "$0")" || {
+  bname="$0"
+  warn 'basename failed'
+}
+
+print_help() (
+printf 'usage: %s [-h] [-d power-directory]\n' "${bname}" >&2
+)
+
+power_dir='/sys/class/power_supply'
+
+while getopts :hd: name; do
+  case "${name}" in
+    h)
+      print_help
+      exit 0
+      ;;
+    d)
+      power_dir="${OPTARG}"
+      ;;
+    :)
+      printf '%s: missing argument for -%s option\n' "${bname}" "${OPTARG}" >&2
+      exit 2
+      ;;
+    ?)
+      printf '%s: illegal option -%s\n' "${bname}" "${OPTARG}" >&2
+      exit 2
+      ;;
+    *)
+      warn 'internal error. unhandled argument'
+      exit 3
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+if [ $# -ne 0 ]; then
+  warn 'unexpected arguments'
+  print_help
+  exit 2
+fi
+
+if ! [ -e "${power_dir}" ]; then
+  printf '%s: %s does not exist\n' "${bname}" "${power_dir}" >&2
+  exit 1
+fi
+
+if ! [ -d "${power_dir}" ]; then
+  printf '%s: %s is not a directory\n' "${bname}" "${power_dir}" >&2
+  exit 1
+fi
+
+if [ "$(ls -- "${power_dir}")" = '' ]; then
+  exit 0
+fi
+# no power supplies.
+
+is_first_line=true
+ls -1A -- "${power_dir}"/. | while read -r power_supply; do
+  power_supply="${power_dir}"'/'"${power_supply}"
+
+  if [ -f "${power_supply}"'/type' ]; then
+    if [ "$(cat -- "${power_supply}"'/type')" = 'Battery' ]; then
+      batt_name="${power_supply##*/}"
+      batt_status="$(cat -- "${power_supply}/status")" || continue
+      batt_capacity="$(cat -- "${power_supply}/capacity")" || continue
+      batt_charge_full="$(cat -- "${power_supply}/charge_full")" || continue
+      batt_charge_full_design="$(cat -- "${power_supply}/charge_full_design")" || continue
+      batt_health="$((batt_charge_full * 100 / batt_charge_full_design))" || continue
+      batt_info_cap="${batt_status} ${batt_capacity}"'%'
+      batt_info_health='Health '"${batt_health}"'%'
+      batt_line="${batt_name}"': '"${batt_info_cap}"' '"${batt_info_health}"
+      if [ -n "${is_first_line}" ]; then
+        is_first_line=''
+        printf '%s' "${batt_line}"
+      else
+        printf ' | %s' "${batt_line}"
+      fi
+    fi
+  fi
+done || {
+  printf '\n'
+  exit 1
+}
+
+printf '\n'
