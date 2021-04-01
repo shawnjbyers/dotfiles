@@ -374,7 +374,10 @@ if is_interactive; then
 
   if is_zsh; then
     # enable syntax highlighting if it's installed
-    for zsh_syntax_hlf in /usr/share/zsh/site-functions/zsh-syntax-highlighting.zsh /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+    for zsh_syntax_hlf in \
+      /usr/share/zsh/site-functions/zsh-syntax-highlighting.zsh \
+      /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    do
       if [ -f "$zsh_syntax_hlf" ]; then
         . "$zsh_syntax_hlf"
         break
