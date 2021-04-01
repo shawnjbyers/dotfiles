@@ -162,30 +162,6 @@ if is_interactive; then
   fi
   )
 
-  user_approve() (
-  # prints any arguments to stderr
-  # returns 0 for yes, 1 for no, and 2 for error
-
-  printf '%s\n' "$*" >&2
-
-  while :; do
-    printf '(y/n): '
-
-    read -r approval || {
-      echo
-      return 2
-    }
-
-    if [ "x${approval}" = 'xy' ]; then
-      return 0
-    elif [ "x${approval}" = 'xn' ]; then
-      return 1
-    else
-      echo 'Enter either ``y'''' or ``n''''.'
-    fi
-  done
-  )
-
   rmdot() {
     local bname='rmdot'
 
