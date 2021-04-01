@@ -40,7 +40,7 @@ if is_interactive; then
     PS3='#? '
     PS4='+ '
 
-    if [ 0 -eq "$user_id" ]; then
+    if [ "x$user_id" = 'x0' ]; then
       # root
       export HISTSIZE=50 # in-memory history 50 lines
       export HISTFILESIZE=0 # disable on-disk history
@@ -98,7 +98,7 @@ if is_interactive; then
     # custom prompt
     PROMPT='%F{green}[%f%B%F{white}%1/%f%b%F{green}]%#%f '
 
-    if [ 0 -eq "$user_id" ]; then
+    if [ "x$user_id" = 'x0' ]; then
       # root
       HISTSIZE=50 # in-memory history 50 lines
       SAVEHIST=0 # disable on-disk history
@@ -112,7 +112,7 @@ if is_interactive; then
     fi
   fi
 
-  if [ 0 -eq "$user_id" ]; then
+  if [ "x$user_id" = 'x0' ]; then
     # root
     alias emerge='emerge --ask --quiet'
   else
@@ -154,7 +154,7 @@ if is_interactive; then
   launch() (
   # launch audacious ~= audacious & disown
 
-  if [ $# = 0 ]; then
+  if [ $# -eq 0 ]; then
     echo 'launch: bad usage' 1>&2
     exit 1
   else
@@ -176,9 +176,9 @@ if is_interactive; then
       return 2
     fi
 
-    if [ 'y' = "${approval}" ]; then
+    if [ "x${approval}" = 'xy' ]; then
       return 0
-    elif [ 'n' = "${approval}" ]; then
+    elif [ "x${approval}" = 'xn' ]; then
       return 1
     else
       echo 'Enter either ``y'''' or ``n''''.'
@@ -269,10 +269,10 @@ if is_interactive; then
     exit 2
   fi
 
-  if [ gnu = "$1" ]; then
+  if [ "x$1" = xgnu ]; then
     ls --color=always > /dev/null 2>&1 || exit 1
     exit 0
-  elif [ macos = "$1" ]; then
+  elif [ "x$1" = xmacos ]; then
     ls -G '-@' > /dev/null 2>&1 || exit 1
     exit 0
     ls
