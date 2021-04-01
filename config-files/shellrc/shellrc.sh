@@ -55,7 +55,9 @@ if is_interactive; then
     export SHELL='/bin/zsh'
 
     # equivalent of bash ``help'' command
-    alias run-help > /dev/null 2>&1 && unalias run-help
+    if alias run-help > /dev/null 2>&1; then
+      unalias run-help
+    fi
     autoload run-help
     alias help='run-help'
 
