@@ -132,6 +132,19 @@ if is_interactive; then
   ### BASIC SETUP ###
 
   umask u=rwx,go= # restrictive creation mode
+
+  if [ "${HOME-}" != '' ] && [ -d "${HOME}"/.local/bin ]; then
+    case "${PATH}" in
+      *:"${HOME}"/.local/bin)
+        # already fine
+        ;;
+      *)
+        # add ~/.local/bin
+        PATH="${PATH}:${HOME}/.local/bin"
+        ;;
+    esac
+  fi
+
   if [ -t 0 ]; then
     stty -ixon # disable ctrl+s on terminals
   fi
