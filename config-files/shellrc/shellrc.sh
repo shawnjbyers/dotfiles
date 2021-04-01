@@ -171,10 +171,10 @@ if is_interactive; then
   while :; do
     printf '(y/n): '
 
-    if ! read -r approval; then
+    read -r approval || {
       echo
       return 2
-    fi
+    }
 
     if [ "x${approval}" = 'xy' ]; then
       return 0
