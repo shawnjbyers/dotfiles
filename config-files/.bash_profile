@@ -1,2 +1,7 @@
-[ -f ~/.profile ] && . ~/.profile
-[ -f ~/.bashrc ] && . ~/.bashrc
+if [ -f ~/.profile ]; then
+  . ~/.profile
+fi
+
+if [ -f ~/.bashrc ]; then
+  . ~/.bashrc
+fi
