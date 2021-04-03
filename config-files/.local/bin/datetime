@@ -67,7 +67,7 @@ main() {
         exit "${user_error}"
         ;;
       *)
-        warn_printf 'internal error: unrecognized option %s' "${OPTARG}"
+        warn_printf 'internal error: unrecognized option %s' "${c}"
         exit "${internal_error}"
         ;;
     esac

@@ -6,6 +6,38 @@ warn() (
 printf '%s: %s\n' "${bname}" "$*" >&2
 )
 
+warn_printf() {
+  if [ $# -lt 1 ]; then
+    warn 'internal error: warn_printf: bad usage'
+    exit 3
+  fi
+
+  (
+  fmt_str="$1"
+  if [ $# -eq 1 ]; then
+    printf '%s: '"${fmt_str}"'\n' "${bname}" >&2
+  else
+    fmt_args=''
+    is_first=true
+    is_second=''
+    for arg in "$@"; do
+      if [ -n "${is_first}" ]; then
+        is_first=''
+        is_second=true
+        continue
+      fi
+      if [ -n "${is_second}" ]; then
+        is_second=''
+        fmt_args="${arg}"
+      else
+        fmt_args="${fmt_args} ${arg}"
+      fi
+    done
+    printf '%s: '"${fmt_str}"'\n' "${bname}" "${fmt_args}" >&2
+  fi
+  )
+}
+
 bname="$(basename -- "$0")" || {
   bname="$0"
   warn 'basename failed'
@@ -30,12 +62,12 @@ while getopts :hd: name; do
       printf '%s: missing argument for -%s option\n' "${bname}" "${OPTARG}" >&2
       exit 2
       ;;
-    ?)
+    \?)
       printf '%s: illegal option -%s\n' "${bname}" "${OPTARG}" >&2
       exit 2
       ;;
     *)
-      warn 'internal error. unhandled argument'
+      warn_printf 'internal error: unhandled argument %s' "${name}"
       exit 3
       ;;
   esac
