@@ -59,11 +59,11 @@ while getopts :hd: name; do
       power_dir="${OPTARG}"
       ;;
     :)
-      printf '%s: missing argument for -%s option\n' "${bname}" "${OPTARG}" >&2
+      warn_printf 'missing argument for -%s option' "${OPTARG}"
       exit 2
       ;;
     \?)
-      printf '%s: illegal option -%s\n' "${bname}" "${OPTARG}" >&2
+      warn_printf 'unrecognized option: -%s' "${OPTARG}"
       exit 2
       ;;
     *)
