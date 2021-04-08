@@ -145,6 +145,8 @@ if is_interactive; then
 
   ### BASIC SETUP ###
 
+  set -u # error on use of an unset variable
+
   umask u=rwx,go= # restrictive creation mode
 
   if [ "${HOME-}" != '' ] && [ -d "${HOME}"/.local/bin ]; then
