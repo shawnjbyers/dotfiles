@@ -47,8 +47,18 @@ for shell in zsh bash; do
     continue
   }
 
-  "${shell_path}" -i -- "${fname}" || {
-    printf '%s: interactive shell %s failed\n' "${bname}" "${shell}" >&2
-    exit 1
-  }
+  if [ "${shell}" = zsh ]; then
+    "${shell_path}" --no-rcs -i -- "${fname}" || {
+      printf '%s: interactive shell %s failed\n' "${bname}" "${shell}" >&2
+      exit 1
+    }
+  elif [ "${shell}" = bash ]; then
+    "${shell_path}" --norc -i -- "${fname}" || {
+      printf '%s: interactive shell %s failed\n' "${bname}" "${shell}" >&2
+      exit 1
+    }
+  else
+    printf '%s: internal error: unrecognized shell: %s\n' "${bname}" "${shell}" >&2
+    exit 3
+  fi
 done
