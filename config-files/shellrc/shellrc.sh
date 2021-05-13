@@ -199,6 +199,12 @@ if is_interactive; then
   fi
   )
 
+  # useful for if you install a program during the lifetime of your shell
+  rereadpath() (
+  echo 'try this:'
+  echo 'hash -r'
+  )
+
   rmdot() {
     local bname='rmdot'
 
@@ -373,9 +379,6 @@ if is_interactive; then
   alias shellcheck='shellcheck --enable=all --severity=style --check-sourced --external-sources'
 
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
-
-  # useful for making your shell recognize a newly installed executable
-  alias rereadpath='PATH="${PATH}"'
 
   if command -v 'rlwrap' > /dev/null 2>&1; then
     alias node='NODE_NO_READLINE=1 rlwrap node'
