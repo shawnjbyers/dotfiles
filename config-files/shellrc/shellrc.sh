@@ -303,6 +303,41 @@ if is_interactive; then
 
   ### ALIASES ###
 
+
+  __echo_helper() (
+  if ! [ -t 1 ]; then
+    \echo "$@" || exit $?
+    exit 0
+  fi
+
+  set_color='\e[1;41m'
+  reset_color='\e[1;m'
+
+  if [ $# -gt 0 ] && [ "$1" = '-n' ]; then
+    args=''
+    is_first_arg=true
+    is_second_arg=''
+
+    for curr_arg in "$@"; do
+      if [ -n "${is_first_arg}" ]; then
+        is_first_arg=''
+        is_second_arg=true
+      elif [ -n "${is_second_arg}" ]; then
+        is_second_arg=''
+        args="${curr_arg}"
+      else
+        args="${args} ${curr_arg}"
+      fi
+    done
+
+    printf "${set_color}"'%s'"${reset_color}" "${args}"
+  else
+    printf "${set_color}"'%s'"${reset_color}"'\n' "$*"
+  fi
+  )
+
+  alias echo='__echo_helper'
+
   alias cargo='cargo -q'
   alias gdb='gdb -q'
   alias mvn='mvn -q'
