@@ -145,7 +145,7 @@ if is_interactive; then
 
   ### BASIC SETUP ###
 
-  set -u # error on use of an unset variable
+  #set -u # error on use of an unset variable
 
   umask u=rwx,go= # restrictive creation mode
 
@@ -292,7 +292,7 @@ if is_interactive; then
     ls --color=always > /dev/null 2>&1 || exit 1
     exit 0
   elif [ "x$1" = xmacos ]; then
-    ls -G '-@' > /dev/null 2>&1 || exit 1
+    ls -G -'@' > /dev/null 2>&1 || exit 1
     exit 0
     ls
   else
@@ -375,12 +375,12 @@ if is_interactive; then
   #                                use a special date format in long
   #                                mode, it looks like ``2020-08-21
   #                                23:14:39''
-  # MacOS: ls -F -A -h -e -G '-@'
+  # MacOS: ls -F -A -h -e -G -'@'
   # # -e:
   #       display access control lists in long mode if a file has
   #       one
   # # -G: colorize output
-  # # '-@':
+  # # -'@':
   #         display extended attribute keys and sizes in long output
 
   # lsna:
@@ -398,8 +398,8 @@ if is_interactive; then
     alias diff='diff'
     alias grep='grep -i -I --color=auto'
     alias ls='ls -F -A'
-    alias ls='ls -F -A -h -e -G '\''-@'\'
-    alias lsna='command ls -F -h -e -G '\''-@'\'
+    alias ls='ls -F -A -h -e -G -'\''@'\'
+    alias lsna='command ls -F -h -e -G -'\''@'\'
   else
     # using POSIX
     alias diff='diff'
@@ -423,14 +423,26 @@ if is_interactive; then
 
   if is_zsh; then
     # enable syntax highlighting if it's installed
-    for zsh_syntax_hlf in \
-      /usr/share/zsh/site-functions/zsh-syntax-highlighting.zsh \
-      /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    do
-      if [ -f "${zsh_syntax_hlf}" ]; then
-        . "${zsh_syntax_hlf}"
-        break
-      fi
-    done
+    zsh_syntax_filename=/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    . "${zsh_syntax_filename}" || {
+      printf 'shellrc: failure in sourcing highlight file %s\n' "${zsh_syntax_filename}" >&2
+    }
+#    for prefix in /usr/local /usr; do
+#      for share_dir in zsh-syntax-highlighting zsh/site-functions; do
+#        zsh_syntax_filename=zsh-syntax-highlighting.zsh
+#        zsh_syntax_hlf="${prefix}/share/${share_dir}/${zsh_syntax_filename}"
+#        if [ -f "${zsh_syntax_hlf}" ]; then
+#          . "${zsh_syntax_hlf}" || {
+#            printf 'shellrc: failure in sourcing highlight file %s\n' \
+#              "${zsh_syntax_hlf}" >&2
+#            # we should still break because it might just be a bug in the
+#            # highlight file
+#          }
+#          break 2
+#        fi
+#      done
+#    done
   fi
+
+  set -u # error on use of an unset variable
 fi
