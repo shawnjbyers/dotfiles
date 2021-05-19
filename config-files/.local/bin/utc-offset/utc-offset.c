@@ -9,7 +9,7 @@
 #define EXIT_USER_ERROR 2
 #define EXIT_INTERNAL_ERROR 3
 
-char *bname = "utc-offset";
+const char *bname = "utc-offset";
 
 void
 print_usage(void)
