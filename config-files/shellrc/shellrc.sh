@@ -366,15 +366,15 @@ if is_interactive; then
   # # -A:
   #       list all files, even hidden files, except for ``.'' and
   #       ``..''
-  # GNU coreutils: ls -F -A -h --color=auto --time-style='%Y-%m-%dT%T'
+  # GNU coreutils: ls -F -A -h --color=auto --time-style='%FT%T%z'
   # # -h:
   #       human readable sizes in long mode (aka, say ``4.0K''
   #       instead of ``4096'')
   # # --color=auto: colorize output when printing to a terminal
-  # # --time-style=+'%Y-%m-%dT%T':
+  # # --time-style='%FT%T%z':
   #                                use a special date format in long
-  #                                mode, it looks like ``2020-08-21
-  #                                23:14:39''
+  #                                mode, it looks like
+  #                                ``2020-08-21T23:14:39-0400''
   # MacOS: ls -F -A -h -e -G -'@'
   # # -e:
   #       display access control lists in long mode if a file has
@@ -391,8 +391,8 @@ if is_interactive; then
     alias grep='grep -i -I --color=auto'
 
     # compliant: ISO 8601
-    alias ls='ls -F -A -h --color=auto --time-style=+'\''%Y-%m-%dT%T'\'
-    alias lsna='command ls -F -h --color=auto --time-style=+'\''%Y-%m-%dT%T'\'
+    alias ls='ls -F -A -h --color=auto --time-style=+'\''%FT%T%z'\'
+    alias lsna='command ls -F -h --color=auto --time-style=+'\''%FT%T%z'\'
 
   elif using_coreutils macos; then
     alias diff='diff'
