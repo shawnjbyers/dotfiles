@@ -14,13 +14,6 @@ set noautoindent
 set nosmartindent
 set nocindent
 
-" use two spaces, not tabs
-set expandtab
-set shiftwidth=2
-set shiftround
-set tabstop=2
-set softtabstop=2
-
 " lines should wrap not get cut off
 set wrap
 
@@ -57,6 +50,13 @@ set showcmd
 
 " TODO: make all these use the FileType events instead of BufEnter
 " TODO: put all these in an augroup
+
+" use two spaces, not tabs
+autocmd FileType sh,bash,zsh,dash set expandtab
+autocmd FileType sh,bash,zsh,dash set shiftwidth=2
+autocmd FileType sh,bash,zsh,dash set shiftround
+autocmd FileType sh,bash,zsh,dash set tabstop=2
+autocmd FileType sh,bash,zsh,dash set softtabstop=2
 
 " autoinsert a newline when a line gets too long
 autocmd BufEnter *.txt set textwidth=72
