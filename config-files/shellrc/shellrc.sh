@@ -62,6 +62,27 @@ if is_interactive; then
       # enable history with 10,000 lines
       export HISTSIZE=10000
       export HISTFILESIZE=10000
+
+      if [ "${HOME-}" = '' ]; then
+        echo 'shellrc: ${HOME} is unset or empty' >&2
+      else
+        histfile_dir=''
+
+        if [ "${XDG_DATA_HOME-}" = '' ]; then
+          histfile_dir="${HOME}"'/.local/share/bash'
+        else
+          histfile_dir="${XDG_DATA_HOME}"'/bash'
+        fi
+
+        if ! [ -d "${histfile_dir}" ]; then
+          mkdir -p -- "${histfile_dir}" || {
+            printf 'shellrc: failed to create directory %s\n' "${histfile_dir}" >&2
+          }
+        fi
+
+        export HISTFILE="${histfile_dir}"'/history'
+        unset histfile_dir
+      fi
     fi
   elif is_zsh; then
     if command -v zsh > /dev/null 2>&1; then
@@ -126,9 +147,29 @@ if is_interactive; then
     else
       # normal user
       # enable history with 10,000 lines
-      HISTFILE=~/.zsh_histfile
       HISTSIZE=10000
       SAVEHIST=10000
+
+      if [ "${HOME-}" = '' ]; then
+        echo 'shellrc: ${HOME} is unset or empty' >&2
+      else
+        histfile_dir=''
+
+        if [ "${XDG_DATA_HOME-}" = '' ]; then
+          histfile_dir="${HOME}"'/.local/share/zsh'
+        else
+          histfile_dir="${XDG_DATA_HOME}"'/zsh'
+        fi
+
+        if ! [ -d "${histfile_dir}" ]; then
+          mkdir -p -- "${histfile_dir}" || {
+            printf 'shellrc: failed to create directory %s\n' "${histfile_dir}" >&2
+          }
+        fi
+
+        export HISTFILE="${histfile_dir}"'/history'
+        unset histfile_dir
+      fi
     fi
   fi
 
@@ -428,7 +469,7 @@ if is_interactive; then
       RLWRAP_HOME="${XDG_DATA_HOME}"'/rlwrap'
     else
       if [ "${HOME-}" = '' ]; then
-        echo 'shellrc: $HOME is unset or empty' >&2
+        echo 'shellrc: ${HOME} is unset or empty' >&2
       else
         RLWRAP_HOME="${HOME}"'/.local/share/rlwrap'
       fi
