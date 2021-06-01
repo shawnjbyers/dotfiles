@@ -82,21 +82,21 @@ if [ 0 -ne $# ]; then
   exit 2
 fi
 
-if [ -z "${sflag}" ]; then
+if [ "${sflag}" = '' ]; then
   sval="$(dirname -- "$0" && printf 'x')" || {
     printf '%s: dirname failed\n' "${bname}" >&2
     exit 1
   }
   sval="${sval%??}" # strip trailing \nx
   
-  if [ -z "${sval}" ]; then
+  if [ "${sval}" = '' ]; then
     printf '%s: could not find dirname\n' "${bname}" >&2
     exit 1
   fi
 fi
 
-if [ -z "${tflag}" ]; then
-  if [ -z "${HOME-}" ]; then
+if [ "${tflag}" = '' ]; then
+  if [ "${HOME-}" = '' ]; then
     printf '%s: could not find HOME directory\n' "${bname}" >&2
     exit 1
   fi

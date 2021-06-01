@@ -1,12 +1,18 @@
 #!/dev/null
 
 is_bash() (
-[ -z "${BASH_VERSION-}" ] || exit 0
+if [ "${BASH_VERSION-}" != '' ]; then
+  exit 0
+fi
+
 exit 1
 )
 
 is_zsh() (
-[ -z "${ZSH_VERSION-}" ] || exit 0
+if [ "${ZSH_VERSION-}" != '' ]; then
+  exit 0
+fi
+
 exit 1
 )
 
@@ -46,7 +52,7 @@ if is_interactive; then
     PS3='#? '
     PS4='+ '
 
-    if [ "x${user_id}" = 'x0' ]; then
+    if [ "${user_id}" = '0' ]; then
       # root
       export HISTSIZE=50 # in-memory history 50 lines
       export HISTFILESIZE=0 # disable on-disk history
@@ -112,7 +118,7 @@ if is_interactive; then
     # custom prompt
     PROMPT='%F{green}[%f%B%F{white}%1/%f%b%F{green}]%#%f '
 
-    if [ "x${user_id}" = 'x0' ]; then
+    if [ "${user_id}" = '0' ]; then
       # root
       HISTSIZE=50 # in-memory history 50 lines
       SAVEHIST=0 # disable on-disk history
@@ -126,7 +132,7 @@ if is_interactive; then
     fi
   fi
 
-  if [ "x${user_id}" = 'x0' ]; then
+  if [ "${user_id}" = '0' ]; then
     # root
     alias emerge='emerge --ask --quiet'
   else
@@ -268,7 +274,7 @@ if is_interactive; then
 
     new_dir="$1"
 
-    if [ "x${new_dir}" = 'x-' ]; then
+    if [ "${new_dir}" = '-' ]; then
       new_dir='./-'
     fi
 
@@ -290,10 +296,10 @@ if is_interactive; then
     exit 2
   fi
 
-  if [ "x$1" = xgnu ]; then
+  if [ "$1" = gnu ]; then
     ls --color=always > /dev/null 2>&1 || exit 1
     exit 0
-  elif [ "x$1" = xmacos ]; then
+  elif [ "$1" = macos ]; then
     ls -G -'@' > /dev/null 2>&1 || exit 1
     exit 0
     ls
@@ -321,10 +327,10 @@ if is_interactive; then
     is_second_arg=''
 
     for curr_arg in "$@"; do
-      if [ -n "${is_first_arg}" ]; then
+      if [ "${is_first_arg}" != '' ]; then
         is_first_arg=''
         is_second_arg=true
-      elif [ -n "${is_second_arg}" ]; then
+      elif [ "${is_second_arg}" != '' ]; then
         is_second_arg=''
         args="${curr_arg}"
       else
@@ -418,10 +424,10 @@ if is_interactive; then
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
 
   if command -v 'rlwrap' > /dev/null 2>&1; then
-    if [ -n "${XDG_DATA_HOME-}" ]; then
+    if [ "${XDG_DATA_HOME-}" != '' ]; then
       RLWRAP_HOME="${XDG_DATA_HOME}"'/rlwrap'
     else
-      if [ -z "${HOME-}" ]; then
+      if [ "${HOME-}" = '' ]; then
         echo 'shellrc: $HOME is unset or empty' >&2
       else
         RLWRAP_HOME="${HOME}"'/.local/share/rlwrap'

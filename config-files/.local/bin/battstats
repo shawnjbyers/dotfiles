@@ -21,12 +21,12 @@ warn_printf() {
     is_first=true
     is_second=''
     for arg in "$@"; do
-      if [ -n "${is_first}" ]; then
+      if [ "${is_first}" != '' ]; then
         is_first=''
         is_second=true
         continue
       fi
-      if [ -n "${is_second}" ]; then
+      if [ "${is_second}" != '' ]; then
         is_second=''
         fmt_args="${arg}"
       else
@@ -111,7 +111,7 @@ ls -1A -- "${power_dir}"/. | while read -r power_supply; do
       batt_info_cap="${batt_status} ${batt_capacity}"'%'
       batt_info_health='Health '"${batt_health}"'%'
       batt_line="${batt_name}"': '"${batt_info_cap}"' '"${batt_info_health}"
-      if [ -n "${is_first_line}" ]; then
+      if [ "${is_first_line}" != '' ]; then
         is_first_line=''
         printf '%s' "${batt_line}"
       else

@@ -32,7 +32,7 @@ while getopts 's:t:' name; do
 done
 shift $((OPTIND - 1))
 
-if [ -z "${sflag}" ] || [ -z "${tflag}" ]; then
+if [ "${sflag}" = '' ] || [ "${tflag}" = '' ]; then
   print_usage
   exit 2
 fi
