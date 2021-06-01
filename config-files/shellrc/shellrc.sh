@@ -167,12 +167,12 @@ if is_interactive; then
     stty -ixon # disable ctrl+s on terminals
   fi
 
-  if command -v vim > /dev/null 2>&1; then
-    if EDITOR="$(command -v vim)"; then
+  if command -v nvim > /dev/null 2>&1; then
+    if EDITOR="$(command -v nvim)"; then
       export EDITOR
       export VISUAL="${EDITOR}"
     else
-      echo 'shellrc: could not find vim' >&2
+      echo 'shellrc: could not find nvim' >&2
     fi
   fi
 
