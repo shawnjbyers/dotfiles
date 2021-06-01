@@ -149,6 +149,8 @@ if is_interactive; then
 
   umask u=rwx,go= # restrictive creation mode
 
+  export LESSHISTFILE='-' # disable on-drive history for less
+
   if [ "${HOME-}" != '' ] && [ -d "${HOME}"/.local/bin ]; then
     case "${PATH}" in
       *:"${HOME}"/.local/bin)
