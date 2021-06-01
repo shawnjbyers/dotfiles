@@ -416,6 +416,16 @@ if is_interactive; then
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
 
   if command -v 'rlwrap' > /dev/null 2>&1; then
+    if [ -n "${XDG_DATA_HOME-}" ]; then
+      RLWRAP_HOME="${XDG_DATA_HOME}"'/rlwrap'
+    else
+      if [ -z "${HOME-}" ]; then
+        echo 'shellrc: $HOME is unset or empty' >&2
+      else
+        RLWRAP_HOME="${HOME}"'/.local/share/rlwrap'
+      fi
+    fi
+
     alias node='NODE_NO_READLINE=1 rlwrap node'
     alias posh='rlwrap posh'
     alias dash='rlwrap dash'
