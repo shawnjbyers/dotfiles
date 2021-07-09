@@ -38,10 +38,32 @@ warn_printf() {
   )
 }
 
+pipe_or_die() (
+if [ $# = 0 ]; then
+  printf '%s: pipe_or_die: internal error: invalid usage\n' "${bname}" >&2
+  kill -- "${self}" || {
+    printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
+  }
+  exit 3
+fi
+
+command_name="$1"
+
+"$@" || {
+  printf '%s: %s: command failed\n' "${bname}" "${command_name}" >&2
+  kill -- "${self}" || {
+    printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
+  }
+  exit 3
+}
+)
+
 bname="$(basename -- "$0")" || {
   bname="$0"
   warn 'basename failed'
 }
+
+self="$$"
 
 print_help() (
 printf 'usage: %s [-h] [-d power-directory]\n' "${bname}" >&2
@@ -97,7 +119,7 @@ fi
 # no power supplies.
 
 is_first_line=true
-ls -1A -- "${power_dir}"/. | while read -r power_supply; do
+pipe_or_die ls -1A -- "${power_dir}"/. | while read -r power_supply; do
   power_supply="${power_dir}"'/'"${power_supply}"
 
   if [ -f "${power_supply}"'/type' ]; then

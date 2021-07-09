@@ -8,8 +8,30 @@ bname="$(basename -- "$0")" || {
   exit 1
 }
 
+self="$$"
+
 print_usage() (
 printf 'usage: %s [-s source-dir] [-t target-dir]\n' "${bname}" >&2
+)
+
+pipe_or_die() (
+if [ $# = 0 ]; then
+  printf '%s: pipe_or_die: internal error: invalid usage\n' "${bname}" >&2
+  kill -- "${self}" || {
+    printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
+  }
+  exit 3
+fi
+
+command_name="$1"
+
+"$@" || {
+  printf '%s: %s: command failed\n' "${bname}" "${command_name}" >&2
+  kill -- "${self}" || {
+    printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
+  }
+  exit 3
+}
 )
 
 install_directory() (
@@ -21,7 +43,7 @@ fi
 source_folder="$1"
 dest_folder="$2"
 
-ls -A1 -- "${source_folder}" | while read -r entry; do
+pipe_or_die ls -A1 -- "${source_folder}" | while read -r entry; do
   entry_path="${source_folder}"/"${entry}"
   if ! [ -e "${entry_path}" ]; then
     printf '%s: could not find file %s\n' "${bname}" "${entry_path}" >&2
