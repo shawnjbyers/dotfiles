@@ -125,6 +125,7 @@ pipe_or_die ls -1A -- "${power_dir}"/. | while read -r power_supply; do
   if [ -f "${power_supply}"'/type' ]; then
     if [ "$(cat -- "${power_supply}"'/type')" = 'Battery' ]; then
       batt_name="${power_supply##*/}"
+      quoted_batt_name=\'"$(printf '%s\n' "${batt_name}" | sed -E "s/'/'"'\\'"''/g")"\' || continue
       batt_status="$(cat -- "${power_supply}/status")" || continue
       batt_capacity="$(cat -- "${power_supply}/capacity")" || continue
       batt_charge_full="$(cat -- "${power_supply}/charge_full")" || continue
@@ -132,7 +133,7 @@ pipe_or_die ls -1A -- "${power_dir}"/. | while read -r power_supply; do
       batt_health="$((batt_charge_full * 100 / batt_charge_full_design))" || continue
       batt_info_cap="${batt_status} ${batt_capacity}"'%'
       batt_info_health='Health '"${batt_health}"'%'
-      batt_line="${batt_name}"': '"${batt_info_cap}"' '"${batt_info_health}"
+      batt_line="${quoted_batt_name}"': '"${batt_info_cap}"' '"${batt_info_health}"
       if [ "${is_first_line}" != '' ]; then
         is_first_line=''
         printf '%s' "${batt_line}"
