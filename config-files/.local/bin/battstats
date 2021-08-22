@@ -118,7 +118,6 @@ if [ "$(ls -- "${power_dir}")" = '' ]; then
 fi
 # no power supplies.
 
-is_first_line=true
 pipe_or_die ls -1A -- "${power_dir}"/. | while read -r power_supply; do
   power_supply="${power_dir}"'/'"${power_supply}"
 
@@ -134,17 +133,7 @@ pipe_or_die ls -1A -- "${power_dir}"/. | while read -r power_supply; do
       batt_info_cap="${batt_status} ${batt_capacity}"'%'
       batt_info_health='Health '"${batt_health}"'%'
       batt_line="${quoted_batt_name}"': '"${batt_info_cap}"' '"${batt_info_health}"
-      if [ "${is_first_line}" != '' ]; then
-        is_first_line=''
-        printf '%s' "${batt_line}"
-      else
-        printf ' | %s' "${batt_line}"
-      fi
+      printf '%s\n' "${batt_line}"
     fi
   fi
-done || {
-  printf '\n'
-  exit 1
-}
-
-printf '\n'
+done || exit 1
