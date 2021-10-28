@@ -129,7 +129,7 @@ nnoremap <Leader>d :r !datetime \|\| date +'\%Y-\%m-\%dT\%T'<CR>kJ
 
 " this mapping makes the current file executable
 " posix-compliant: POSIX.1-2008
-nnoremap <Leader>x :w\|:silent !chmod u+x '%'<CR>:redraw!<CR>
+nnoremap <Leader>x :w\|:silent !chmod -- u+x '%'<CR>:redraw!<CR>
 " Note: ``silent'' suppresses messages and ``redraw'' redraws the screen. the
 " ``set autoread'' found earlier suppresses a vim warning
 " TODO: this ^^ will fail when the filename (%) has a single quote in it.
