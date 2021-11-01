@@ -2,6 +2,11 @@
 
 set -eu
 
+readonly ex_ok=0
+readonly ex_failure=1 # generic failure
+readonly ex_usage=64 # command line usage error
+readonly ex_software=70 # internal error
+
 warn() (
 printf '%s: %s\n' "${bname}" "$*" >&2
 )
@@ -9,7 +14,7 @@ printf '%s: %s\n' "${bname}" "$*" >&2
 warn_printf() {
   if [ $# -lt 1 ]; then
     warn 'internal error: warn_printf: bad usage'
-    exit 3
+    exit "${ex_software}"
   fi
 
   (
@@ -44,7 +49,7 @@ if [ $# = 0 ]; then
   kill -- "${self}" || {
     printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
   }
-  exit 3
+  exit "${ex_software}"
 fi
 
 command_name="$1"
@@ -54,7 +59,7 @@ command_name="$1"
   kill -- "${self}" || {
     printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
   }
-  exit 3
+  exit "${ex_software}"
 }
 )
 
@@ -75,22 +80,22 @@ while getopts :hd: name; do
   case "${name}" in
     h)
       print_help
-      exit 0
+      exit "${ex_ok}"
       ;;
     d)
       power_dir="${OPTARG}"
       ;;
     :)
       warn_printf 'missing argument for -%s option' "${OPTARG}"
-      exit 2
+      exit "${ex_usage}"
       ;;
     \?)
       warn_printf 'unrecognized option: -%s' "${OPTARG}"
-      exit 2
+      exit "${ex_usage}"
       ;;
     *)
       warn_printf 'internal error: unhandled argument %s' "${name}"
-      exit 3
+      exit "${ex_software}"
       ;;
   esac
 done
@@ -100,21 +105,21 @@ shift $((OPTIND - 1))
 if [ $# -ne 0 ]; then
   warn 'unexpected arguments'
   print_help
-  exit 2
+  exit "${ex_usage}"
 fi
 
 if ! [ -e "${power_dir}" ]; then
   printf '%s: %s does not exist\n' "${bname}" "${power_dir}" >&2
-  exit 1
+  exit "${ex_failure}"
 fi
 
 if ! [ -d "${power_dir}" ]; then
   printf '%s: %s is not a directory\n' "${bname}" "${power_dir}" >&2
-  exit 1
+  exit "${ex_failure}"
 fi
 
 if [ "$(ls -- "${power_dir}")" = '' ]; then
-  exit 0
+  exit "${ex_ok}"
 fi
 # no power supplies.
 
@@ -136,4 +141,4 @@ pipe_or_die ls -1A -- "${power_dir}"/. | while read -r power_supply; do
       printf '%s\n' "${batt_line}"
     fi
   fi
-done || exit 1
+done || exit "${ex_failure}"
