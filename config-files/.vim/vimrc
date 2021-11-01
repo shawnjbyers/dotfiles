@@ -53,13 +53,6 @@ autocmd BufEnter .Rprofile setlocal filetype=r
 " TODO: make all these use the FileType events instead of BufEnter
 " TODO: put all these in an augroup
 
-" use two spaces, not tabs
-autocmd FileType sh,bash,zsh,dash set expandtab
-autocmd FileType sh,bash,zsh,dash set shiftwidth=2
-autocmd FileType sh,bash,zsh,dash set shiftround
-autocmd FileType sh,bash,zsh,dash set tabstop=2
-autocmd FileType sh,bash,zsh,dash set softtabstop=2
-
 " use four spaces for R
 autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
 
