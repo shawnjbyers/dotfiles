@@ -47,6 +47,8 @@ set display=lastline
 " display partially-finished, normal-mode commands at the bottom right
 set showcmd
 
+" recognize .Rprofile
+autocmd BufEnter .Rprofile setlocal filetype=r
 
 " TODO: make all these use the FileType events instead of BufEnter
 " TODO: put all these in an augroup
@@ -57,6 +59,9 @@ autocmd FileType sh,bash,zsh,dash set shiftwidth=2
 autocmd FileType sh,bash,zsh,dash set shiftround
 autocmd FileType sh,bash,zsh,dash set tabstop=2
 autocmd FileType sh,bash,zsh,dash set softtabstop=2
+
+" use four spaces for R
+autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
 
 " autoinsert a newline when a line gets too long
 autocmd BufEnter *.txt set textwidth=72
