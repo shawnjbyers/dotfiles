@@ -387,6 +387,19 @@ if is_interactive; then
 
   alias echo='__echo_helper'
 
+  __units_helper() {
+    if [ $# = 0 ]; then
+      echo 'user error. try one of the following:'
+      echo '$ units --one-line'
+      echo '$ units -1'
+      return 64
+    else
+      \units "$@"
+    fi
+  }
+
+  alias units='__units_helper'
+
   alias cargo='cargo -q'
   alias gdb='gdb -q'
   alias mvn='mvn -q'
