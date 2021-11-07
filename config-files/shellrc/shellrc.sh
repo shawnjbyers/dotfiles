@@ -266,7 +266,7 @@ if is_interactive; then
     local current_dir
     current_dir="$(pwd)" || return 1
     cd .. || return 1
-    rm -r -- "${current_dir}" || return 1
+    rm -rf -- "${current_dir}" || return 1
   }
 
   inewtest() {
