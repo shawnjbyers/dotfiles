@@ -110,7 +110,7 @@ if [ "${sflag}" = '' ]; then
     exit 1
   }
   sval="${sval%??}" # strip trailing \nx
-  
+
   if [ "${sval}" = '' ]; then
     printf '%s: could not find dirname\n' "${bname}" >&2
     exit 1

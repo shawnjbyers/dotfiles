@@ -472,7 +472,7 @@ if is_interactive; then
 
   alias please='sudo'
   alias plz='sudo'
-  
+
   alias shellcheck='shellcheck --enable=all --severity=style --check-sourced --external-sources'
 
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
