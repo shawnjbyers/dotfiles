@@ -13,6 +13,11 @@ bname="$(basename -- "$0")" || {
   exit "${ex_failure}"
 }
 
+dname="$(dirname -- "$0")" || {
+  printf '%s: dirname failed\n' "${bname}" >&2
+  exit "${ex_failure}"
+}
+
 self="$$"
 
 print_usage() (
@@ -62,7 +67,11 @@ pipe_or_die ls -A1 -- "${source_folder}" | while read -r entry; do
     }
   elif [ -d "${entry_path}" ]; then
     if [ -e "${entry_path}"/.recursive-install ]; then
-      "${entry_path}"/install -s "${entry_path}" -t "${dest_folder}" || {
+      {
+        cat -- "${dname}"/template-install.sh "${entry_path}"/install.sh > "${entry_path}"/install
+        chmod -- u+x "${entry_path}"/install
+        "${entry_path}"/install -s "${entry_path}" -t "${dest_folder}"
+      } || {
         printf '%s: recursive install failed in %s\n' "${bname}" "${entry_path}" >&2
         exit "${ex_failure}"
       }

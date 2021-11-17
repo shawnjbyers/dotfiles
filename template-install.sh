@@ -41,6 +41,3 @@ if [ 0 -ne $# ]; then
   print_usage
   exit 2
 fi
-
-echo 'UNFINISHED'
-exit 5
