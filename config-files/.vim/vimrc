@@ -124,6 +124,11 @@ endfunction
 nnoremap <C-S> :w<CR>
 inoremap <C-S> <C-O>:w<CR>
 
+" these mappings force the user to use extended regular expressions (EREs)
+" when searching
+nnoremap / :echom "Use /\\v instead"<CR>
+nnoremap /<Bslash>v /<Bslash>v
+
 " this mapping inserts the date and time
 " posix-compliant: POSIX.1-2008
 " compliant: ISO 8601
