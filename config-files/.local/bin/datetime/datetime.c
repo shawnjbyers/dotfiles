@@ -68,7 +68,7 @@ main(int argc, char *argv[])
     return EXIT_OP_ERROR;
   }
 
-  while (strftime(offsetstr, offsetstr_len, "%FT%T\xff\xff%z", &time_info) == 0) {
+  while (strftime(offsetstr, offsetstr_len, "%FT%T%z", &time_info) == 0) {
     if (offsetstr_len < 1000) {
       offsetstr_len = offsetstr_len * 2;
       free(offsetstr);
@@ -82,23 +82,6 @@ main(int argc, char *argv[])
 
     fprintf(stderr, "%s: failed to print time\n", bname);
     return EXIT_OP_ERROR;
-  }
-
-  bool found_minus = false;
-  char *tmp_minus = "\xff\xff-";
-  char *minus_sign = "\xe2\x88\x92";
-
-  for (size_t i = 0; i < offsetstr_len - 2; i++) {
-    if (memcmp(offsetstr + i, tmp_minus, strlen(tmp_minus)) == 0) {
-      found_minus = true;
-      memcpy(offsetstr + i, minus_sign, strlen(minus_sign));
-      break;
-    }
-  }
-
-  if (!found_minus) {
-    fprintf(stderr, "%s: internal error: could not replace hyphen with minus sign\n", bname);
-    return EXIT_INTERNAL_ERROR;
   }
 
   puts(offsetstr);
