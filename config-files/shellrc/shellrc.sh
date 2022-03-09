@@ -254,6 +254,12 @@ if is_interactive; then
   echo 'hash -r'
   )
 
+  less() (
+  echo 'try one of these:'
+  echo 'nvim -c "set nomod" -'
+  echo 'nvim -c "set nomodified" -'
+  )
+
   rmdot() {
     local bname='rmdot'
 
