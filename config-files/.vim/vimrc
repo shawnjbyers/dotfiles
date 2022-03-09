@@ -145,8 +145,7 @@ nnoremap <Leader>x :w\|:silent !chmod -- u+x '%'<CR>:redraw!<CR>
 " executes the current file
 nnoremap <Leader>e :w\|:call ExecFile(@%, 0)<CR>
 
-" executes the current file
-nnoremap <Leader>s :filetype detect<CR>
+nnoremap <Leader>s i<CR>USE :filetype detect INSTEAD<CR><CR>
 
 nnoremap <Leader>ma :w\|!make<CR>
 nnoremap <Leader>mt :w\|!make test<CR>
