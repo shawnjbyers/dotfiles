@@ -198,6 +198,8 @@ if is_interactive; then
 
   export LESSHISTFILE='-' # disable on-drive history for less
 
+  export MANPAGER='nvim-manpager'
+
   if [ "${HOME-}" != '' ] && [ -d "${HOME}"/.local/bin ]; then
     case "${PATH}" in
       *:"${HOME}"/.local/bin)

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -eu
+
+readonly vim_settings='
+set filetype=man nomodified nolist norelativenumber nonumber
+'
+
+for v in nvim vim
+do
+	if command -v -- "$v" > /dev/null 2>&1
+	then
+		vim_impl="$v"
+		break
+	fi
+done
+
+"$vim_impl" -c "$vim_settings" -
