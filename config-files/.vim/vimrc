@@ -126,7 +126,7 @@ inoremap <C-S> <C-O>:w<CR>
 
 " these mappings force the user to use extended regular expressions (EREs)
 " when searching
-nnoremap / :echom "Use /\\v instead"<CR>
+nnoremap / i<CR>USE /\v INSTEAD<CR><CR>
 nnoremap /<Bslash>v /<Bslash>v
 
 " this mapping inserts the date and time
