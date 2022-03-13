@@ -258,8 +258,11 @@ if is_interactive; then
 
   less() (
   echo 'try one of these:'
-  echo 'nvim -c "set nomod" -'
-  echo 'nvim -c "set nomodified" -'
+  echo "nvim -c 'set nomod' -"
+  echo "vim -c 'set nomod' -"
+  echo 'vi -'
+  echo 'command less'
+  echo 'more'
   )
 
   rmdot() {
