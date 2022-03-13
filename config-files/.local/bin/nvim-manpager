@@ -6,6 +6,8 @@ readonly vim_settings='
 set filetype=man nomodified nolist norelativenumber nonumber
 '
 
+vim_impl=''
+
 for v in nvim vim
 do
 	if command -v -- "$v" > /dev/null 2>&1
@@ -14,5 +16,11 @@ do
 		break
 	fi
 done
+
+if [ "$vim_impl" = '' ]
+then
+	echo 'nvim-manpager: could not find a suitable text editor'
+	exit 1
+fi
 
 "$vim_impl" -c "$vim_settings" -
