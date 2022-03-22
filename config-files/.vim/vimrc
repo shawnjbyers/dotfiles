@@ -23,8 +23,8 @@ set nohlsearch
 " show where current search matches as it's being typed
 set incsearch
 
-" ignore case while searching
-set ignorecase
+" ignore case while searching unless uppercase letters are present
+set smartcase
 
 " if a file changes, automatically read in the new version. this allows the
 " ``chmod'' binding below to work without an extraneous message
