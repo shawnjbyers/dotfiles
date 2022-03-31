@@ -26,6 +26,12 @@ set incsearch
 " ignore case while searching unless uppercase letters are present
 set smartcase
 
+" ignore case when tab-completing filenames
+set wildignorecase
+
+" avoid completing ambiguous matches and list possible options
+set wildmode=longest:full
+
 " if a file changes, automatically read in the new version. this allows the
 " ``chmod'' binding below to work without an extraneous message
 set autoread
