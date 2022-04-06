@@ -44,8 +44,11 @@ if is_interactive; then
     fi
     shopt -s extglob # enable extended globbing
 
-    # bash lists the status of stopped or running jobs before exiting
-    shopt -s checkjobs
+    # if bash major version is 5 or more
+    if [ "${BASH_VERSION%%.*}" -ge 5 ]; then
+      # bash lists the status of stopped or running jobs before exiting
+      shopt -s checkjobs
+    fi
 
     PS1='\[\033[01;32m\][\[\033[01;37m\]\W\[\033[01;32m\]]\$\[\033[00m\] '
     PS2='> '
