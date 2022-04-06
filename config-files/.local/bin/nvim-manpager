@@ -2,9 +2,18 @@
 
 set -eu
 
+readonly ex_failure=1 # generic failure
+readonly ex_software=70 # internal error
+
 readonly vim_settings='
 set filetype=man nomodified nolist norelativenumber nonumber
 '
+
+readonly basename="$(basename -- "$0")"
+
+warn() {
+	printf '%s: %s\n' "$basename" "$*" >&2
+}
 
 vim_impl=''
 
@@ -20,7 +29,16 @@ done
 if [ "$vim_impl" = '' ]
 then
 	echo 'nvim-manpager: could not find a suitable text editor'
-	exit 1
+	exit "$ex_failure"
 fi
 
-"$vim_impl" -c "$vim_settings" -
+if [ "$vim_impl" = nvim ]
+then
+	exec "$vim_impl" -c "$vim_settings" -
+elif [ "$vim_impl" = vim ]
+then
+	col -b | "$vim_impl" -c "$vim_settings" -
+else
+	warn 'internal error: unrecognized Vim implementation'
+	exit "$ex_software"
+fi
