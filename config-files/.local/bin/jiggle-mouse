@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+import os
+import time
+
+while True:
+    os.system('xdotool mousemove_relative 1 0 mousemove_relative -- -1 0')
+    three_minutes = 3 * 60
+    time.sleep(three_minutes)
