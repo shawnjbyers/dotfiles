@@ -3,10 +3,8 @@ set encoding=utf-8
 " enable syntax highlighting
 syntax on
 
-" enable absolute line number for current line and relative line numbers for
-" all other lines
+" enable absolute line numbers
 set number
-set relativenumber
 
 " disable unnecessary indentation rules
 set noautoindent
