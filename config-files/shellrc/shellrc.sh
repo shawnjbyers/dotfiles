@@ -1,5 +1,11 @@
 #!/dev/null
 
+if [ "${HOME-}" != '' ]; then
+  if [ -f "${HOME}/.profile" ]; then
+    . "${HOME}/.profile"
+  fi
+fi
+
 is_bash() (
 if [ "${BASH_VERSION-}" != '' ]; then
   exit 0
