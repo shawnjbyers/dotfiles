@@ -1,6 +1,13 @@
-if [ "${HOME-}" != '' ] && [ -d "${HOME}/.local/bin" ]; then
-  export PATH="${PATH}:${HOME}/.local/bin"
+if [ "${HOME-}" != '' ]; then
+  if [ -d "${HOME}/.local/bin" ]; then
+    export PATH="${PATH}:${HOME}/.local/bin"
+  fi
+
+  if [ -d "${HOME}/.pub-cache/bin" ]; then
+    export PATH="${PATH}:${HOME}/.pub-cache/bin"
+  fi
 fi
+
 umask u=rwx,go=
 
 export GUI_EDITOR
