@@ -532,3 +532,10 @@ if is_interactive; then
 
   set -u # error on use of an unset variable
 fi
+
+__old_path="$PATH"
+if __new_path="$(printf '%s\n' "$PATH" | tr ':' '\n' | awk '!uniq[$0]++' | tr '\n' : | sed -E 's/:$/\n/')"; then
+  PATH="$__new_path"
+else
+  PATH="$__old_path"
+fi
