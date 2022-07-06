@@ -35,7 +35,7 @@ fi
 if [ "$vim_impl" = nvim ]
 then
 	# temporarily use col -b before nvim gets updated
-	col -b | "$vim_impl" -c "$vim_settings" -
+	"$vim_impl" +'Man!'
 elif [ "$vim_impl" = vim ]
 then
 	col -b | "$vim_impl" -c "$vim_settings" -
