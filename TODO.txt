@@ -1,0 +1,25 @@
+Use meson for C code.
+
+find . -type f ! -path '*/.git/*' -exec grep -E -- 'TODO|XXX' '{}' +
+
+Use XDG basedirs for ~/.gdbinit and other things.
+gtkboard
+units
+python3
+less
+tig
+.inputrc
+rlwrap
+
+Use /usr/include/sysexits.h for exit statuses on programs.
+
+Change shell code to use tabs, not spaces.
+
+Update nvim-manpager to failover to the system settings if vim or nvim
+is not found.
+
+Make ~/.local/bin/search-path properly parse arguments.
+
+Use a .editorconfig.
+
+Make Neovim support .editorconfig.
