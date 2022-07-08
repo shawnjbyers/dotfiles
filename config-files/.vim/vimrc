@@ -63,6 +63,9 @@ autocmd BufEnter .Rprofile setlocal filetype=r
 " use four spaces for R
 autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
 
+" use two spaces for Dart
+autocmd Filetype dart setlocal expandtab shiftwidth=2 tabstop=2
+
 " autoinsert a newline when a line gets too long
 autocmd BufEnter *.txt set textwidth=72
 
