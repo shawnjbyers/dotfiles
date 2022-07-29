@@ -23,3 +23,5 @@ Make ~/.local/bin/search-path properly parse arguments.
 Use a .editorconfig.
 
 Make Neovim support .editorconfig.
+
+Write zsh completion scripts for the commands in ~/.local/bin.
