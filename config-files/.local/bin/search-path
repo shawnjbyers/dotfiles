@@ -9,14 +9,15 @@ def main():
     assert len(sys.argv) == 2
     search_pattern = sys.argv[1]
     for pathdir in os.environ['PATH'].split(':'):
-        base_cmd = 'ls -A1 -- {}/. | grep -E -- {}'
-        completed_cmd = base_cmd.format(shlex.quote(pathdir), shlex.quote(search_pattern))
+        ls_cmd = f'ls -A1 -- {shlex.quote(pathdir)}/.'
+        grep_cmd = f'grep -E -- {shlex.quote(search_pattern)}'
+        full_cmd = f'{ls_cmd} | {grep_cmd}'
         cmd_proc = subprocess.Popen(
-                ['sh', '-c', completed_cmd],
-                stdout=subprocess.PIPE
+            ['sh', '-c', full_cmd],
+            stdout=subprocess.PIPE
         )
         cmd_out, cmd_err = cmd_proc.communicate()
-        file_lines = cmd_out.decode('utf-8').splitlines()
+        file_lines = cmd_out.decode('UTF-8').splitlines()
         for line in file_lines:
             print(pathdir + '/' + line)
 
