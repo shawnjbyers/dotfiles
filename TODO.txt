@@ -25,3 +25,5 @@ Use a .editorconfig.
 Make Neovim support .editorconfig.
 
 Write zsh completion scripts for the commands in ~/.local/bin.
+
+Include bpftrace syntax highlighting for Vim and Neovim.
