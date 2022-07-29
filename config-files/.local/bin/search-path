@@ -1,17 +1,41 @@
 #!/usr/bin/env python
 
-import sys
+import argparse
 import os
-import subprocess
 import shlex
+import subprocess
+import sys
+
+cmd_name = 'search-path'
+version = '0.1.0'
 
 def main():
-    assert len(sys.argv) == 2
-    search_pattern = sys.argv[1]
+    parser = argparse.ArgumentParser(
+        prog=cmd_name,
+        description='Search the path for a pattern',
+        allow_abbrev=False
+    )
+
+    parser.add_argument(
+        '-V', '--version', action='version', version=f'%(prog)s {version}'
+    )
+
+    parser.add_argument('search_pattern')
+
+    # TODO: Add extra options.
+    # parser.add_argument('-E', '--extended-regexp', ???) # default
+    # parser.add_argument('-F', '--fixed-strings', ???)
+    # parser.add_argument('-G', '--basic-regexp', ???)
+    # parser.add_argument('-P', '--perl-regexp', ???)
+
+    args = parser.parse_args()
+
     for pathdir in os.environ['PATH'].split(':'):
         ls_cmd = f'ls -A1 -- {shlex.quote(pathdir)}/.'
-        grep_cmd = f'grep -E -- {shlex.quote(search_pattern)}'
+        quoted_pattern = shlex.quote(args.search_pattern)
+        grep_cmd = f'grep -E -- {quoted_pattern}'
         full_cmd = f'{ls_cmd} | {grep_cmd}'
+
         cmd_proc = subprocess.Popen(
             ['sh', '-c', full_cmd],
             stdout=subprocess.PIPE
