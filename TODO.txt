@@ -27,3 +27,6 @@ Write zsh completion scripts for the commands in ~/.local/bin.
 Include bpftrace syntax highlighting for Vim and Neovim.
 
 Make all scripts parse arguments properly.
+
+Make zsh completion work for units even though it's aliased to a
+function.
