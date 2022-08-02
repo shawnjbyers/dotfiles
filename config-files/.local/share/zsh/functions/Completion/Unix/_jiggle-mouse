@@ -1,0 +1,7 @@
+#compdef jiggle-mouse
+
+_arguments -C \
+	\*{-h,--help}'[display help information]' \
+	\*{-V,--version}'[display version information]' \
+	'--delay=[amount of delay between jigglings]' \
+	'--count=[number of times to jiggle the mouse]'
