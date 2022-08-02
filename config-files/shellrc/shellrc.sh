@@ -114,6 +114,10 @@ if is_interactive; then
     setopt INTERACTIVE_COMMENTS HIST_IGNORE_ALL_DUPS AUTO_CD
     unsetopt BEEP NOTIFY
 
+    # add ~/.local/share/zsh to autocompletion
+    # hidden behind eval so other shells can still parse this file
+    eval 'fpath=(~/.local/share/zsh/functions/Completion/*/. $fpath)'
+
     # initialize autocompletion
     autoload -Uz compinit
     compinit
