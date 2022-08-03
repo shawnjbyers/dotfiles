@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
+import re
 import time
+import unicodedata
 
 cmd_name = 'datetime'
 version = '0.1.0'
+minus_sign = unicodedata.lookup('MINUS SIGN')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -19,4 +22,10 @@ if __name__ == '__main__':
 
     parser.parse_args()
 
-    print(time.strftime('%FT%T%z'))
+    ascii_time = time.strftime('%FT%T%z')
+    unicode_time = re.sub(
+        r'^(.*)-(\d{4})$',
+        f'\\1{minus_sign}\\2',
+        ascii_time
+    )
+    print(unicode_time)
