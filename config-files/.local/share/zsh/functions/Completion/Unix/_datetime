@@ -1,0 +1,5 @@
+#compdef datetime
+
+_arguments -C \
+	\*{-h,--help}'[display help information]' \
+	\*{-V,--version}'[display version information]'
