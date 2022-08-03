@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import argparse
+import time
+
+cmd_name = 'datetime'
+version = '0.1.0'
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        prog=cmd_name,
+        description='Prints the date and time with an ISO 8601 format.',
+        allow_abbrev=False
+    )
+
+    parser.add_argument(
+        '-V', '--version', action='version', version=f'%(prog)s {version}'
+    )
+
+    parser.parse_args()
+
+    print(time.strftime('%FT%T%z'))
