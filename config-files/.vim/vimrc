@@ -46,7 +46,7 @@ set list
 
 " highlight trailing whitespace on a line in red
 highlight TrailingSpaces ctermbg=red guibg=red
-match TrailingSpaces /\s\+$/
+match TrailingSpaces /\v\s+$/
 
 " show as much of the current line as possible if it doesn't fit on the screen
 set display=lastline
