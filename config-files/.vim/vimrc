@@ -57,45 +57,41 @@ set showcmd
 " recognize .Rprofile
 autocmd BufEnter .Rprofile setlocal filetype=r
 
-" TODO: make all these use the FileType events instead of BufEnter
 " TODO: put all these in an augroup
 
 " use four spaces for R
 autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
 
 " use two spaces for Dart
-autocmd Filetype dart setlocal expandtab shiftwidth=2 tabstop=2
+autocmd FileType dart setlocal expandtab shiftwidth=2 tabstop=2
 
 " autoinsert a newline when a line gets too long
-autocmd BufEnter *.txt set textwidth=72
+autocmd FileType text setlocal textwidth=72
 
 " do not round indentation to a multiple of 'shiftwidth'
-autocmd BufEnter *.rkt,*.lisp,*.cl,*.el,*.ss,*.scm set noshiftround
+autocmd FileType scheme,lisp setlocal noshiftround
 
 " make sure tabs are real tabs and not expanded into spaces
-autocmd BufEnter Makefile,*.asm,*.s,*.S set noexpandtab
+autocmd FileType make,asm setlocal noexpandtab tabstop=8
 
-" make sure tabs are real tabs and not expanded into spaces
-autocmd BufEnter Makefile,*.asm,*.s,*.S set tabstop=8
+autocmd FileType c,asm map <CR> :w\|:!make run<CR>
+autocmd FileType c,asm map <Tab> :w\|:!make test<CR>
 
-autocmd BufEnter *.c,*.asm,*.s,*.S map <CR> :w\|:!make run<CR>
-autocmd BufEnter *.c,*.asm,*.s,*.S map <Tab> :w\|:!make test<CR>
-
-autocmd BufEnter *.c map <BS> :w\|:!cc -Wall -Wextra -Werror -g -O0 -o '%:r' '%' && ./'%:r'<CR>
+autocmd FileType c map <BS> :w\|:!cc -Wall -Wextra -Werror -g -O0 -o '%:r' '%' && ./'%:r'<CR>
 " TODO: this will fail if the filename has a single quote or if it is an
 " absolute path
 
-autocmd BufEnter *.rs map <CR> :w\|:!cargo -q run<CR>
-autocmd BufEnter *.rs map <Tab> :w\|:!cargo -q test<CR>
-autocmd BufEnter *.java map <CR> :w\|:!mvn -q run<CR>
-autocmd BufEnter *.java map <Tab> :w\|:!mvn -q test<CR>
-autocmd BufEnter *.java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
-autocmd BufEnter *.txt map <CR> :w<CR>
-autocmd BufEnter *.tex,*.latex map <CR> :w\|:!make run<CR><CR>
-autocmd BufEnter *.latex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
+autocmd FileType rust map <CR> :w\|:!cargo -q run<CR>
+autocmd FileType rust map <Tab> :w\|:!cargo -q test<CR>
+autocmd FileType java map <CR> :w\|:!mvn -q run<CR>
+autocmd FileType java map <Tab> :w\|:!mvn -q test<CR>
+autocmd FileType java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
+autocmd FileType text map <CR> :w<CR>
+autocmd FileType tex,plaintex map <CR> :w\|:!make run<CR><CR>
+autocmd FileType tex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
 " TODO: support more pdf readers
-autocmd BufEnter *.latex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
-autocmd BufEnter *.stp,*.d,*.bt map <CR> :w\|:call ExecFile(@%, 1)<CR>
+autocmd FileType tex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
+autocmd FileType stp,d,bpftrace map <CR> :w\|:call ExecFile(@%, 1)<CR>
 
 " this function executes the file currently being edited if the file exists
 function ExecFile(filepath, shouldUseSudo)
