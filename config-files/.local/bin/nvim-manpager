@@ -2,8 +2,13 @@
 
 set -eu
 
+readonly ex_ok=0
 readonly ex_failure=1 # generic failure
+readonly ex_usage=64 # command line usage error
 readonly ex_software=70 # internal error
+
+readonly cmd_name="nvim-manpager"
+readonly version="0.1.0"
 
 readonly vim_settings='
 set filetype=man nomodified nolist norelativenumber nonumber
@@ -14,6 +19,54 @@ readonly basename="$(basename -- "$0")"
 warn() {
 	printf '%s: %s\n' "$basename" "$*" >&2
 }
+
+print_version() {
+	printf '%s %s\n' "$cmd_name" "$version"
+}
+
+print_usage() {
+	printf 'usage: %s [-h] [-V]\n' "$cmd_name"
+	echo
+	echo "Use like so:"
+	printf '$ MANPAGER=%s\n' "$cmd_name"
+	echo
+	echo "options:"
+	echo "  -h, --help    show this help message and exit"
+	echo "  -V, --version show program's version number and exit"
+}
+
+invalid_arguments() {
+	warn "Invalid arguments."
+	echo
+	print_version
+	echo
+	print_usage
+	exit "$ex_usage"
+}
+
+# Parse arguments.
+
+if [ $# != 0 ]
+then
+	if [ $# != 1 ]
+	then
+		invalid_arguments
+	fi
+
+	case "$1" in
+		-h | --help)
+			print_usage
+			exit "$ex_ok"
+			;;
+		-V | --version)
+			print_version
+			exit "$ex_ok"
+			;;
+		*)
+			invalid_arguments
+			;;
+	esac
+fi
 
 vim_impl=''
 
