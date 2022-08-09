@@ -1,0 +1,8 @@
+#compdef search-path
+
+_arguments -C \
+	\*{--help,-h}'[display help information]' \
+	\*{--version,-V}'[display version information]' \
+	'*:search_pattern:'
+
+# TODO: Explain to zsh that it takes one POSIX ERE argument.
