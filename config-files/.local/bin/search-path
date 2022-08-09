@@ -20,7 +20,10 @@ def main():
         '-V', '--version', action='version', version=f'%(prog)s {version}'
     )
 
-    parser.add_argument('search_pattern')
+    parser.add_argument(
+        'search_pattern',
+        help='a POSIX extended regular expression (ERE)'
+    )
 
     # TODO: Add extra options.
     # parser.add_argument('-E', '--extended-regexp', ???) # default
@@ -41,7 +44,7 @@ def main():
             stdout=subprocess.PIPE
         )
         cmd_out, cmd_err = cmd_proc.communicate()
-        file_lines = cmd_out.decode('UTF-8').splitlines()
+        file_lines = cmd_out.decode('utf-8').splitlines()
         for line in file_lines:
             print(pathdir + '/' + line)
 
