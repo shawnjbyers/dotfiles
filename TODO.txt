@@ -1,5 +1,3 @@
-Use meson for C code.
-
 find . -type f ! -path '*/.git/*' -exec grep -E -- 'TODO|XXX' '{}' +
 
 Use XDG basedirs for ~/.gdbinit and other things.
@@ -22,11 +20,7 @@ Use a .editorconfig.
 
 Make Neovim support .editorconfig.
 
-Write zsh completion scripts for the commands in ~/.local/bin.
-
 Include bpftrace syntax highlighting for Vim and Neovim.
-
-Make all scripts parse arguments properly.
 
 Make zsh completion work for units even though it's aliased to a
 function.
