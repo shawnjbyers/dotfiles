@@ -1,5 +1,28 @@
 set encoding=utf-8
 
+" Executes the file currently being edited if the file exists.
+function ExecFile(filepath, shouldUseSudo)
+  if len(a:filepath) == 0
+    echom "no filename"
+    return 1
+  endif
+
+  let cmd = "!"
+
+  if a:shouldUseSudo
+    let cmd = l:cmd.."sudo "
+  endif
+
+  if a:filepath[0] != "/"
+    let cmd = l:cmd.."./"
+  endif
+
+  let cmd = l:cmd..shellescape(a:filepath)
+  echom l:cmd
+  execute l:cmd
+  return 0
+endfunction
+
 " enable syntax highlighting
 syntax on
 
@@ -92,35 +115,6 @@ autocmd FileType tex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
 " TODO: support more pdf readers
 autocmd FileType tex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
 autocmd FileType stp,d,bpftrace map <CR> :w\|:call ExecFile(@%, 1)<CR>
-
-" this function executes the file currently being edited if the file exists
-function ExecFile(filepath, shouldUseSudo)
-  if len(a:filepath) == 0
-    echom "no filename"
-    return 1
-  endif
-
-  let cmd = "!"
-
-  if a:shouldUseSudo
-    let cmd = l:cmd . "sudo "
-  endif
-
-  if a:filepath[0] != "/"
-    let cmd = l:cmd . "./"
-  endif
-
-  "for c in a:filepath
-  "  if c == "'"
-  "    TODO: replace ' with '\''
-  "  endif
-  "endfor
-
-  let cmd = l:cmd . "'" . a:filepath . "'"
-  echom l:cmd
-  execute l:cmd
-  return 0
-endfunction
 
 " these mappings save the current file
 nnoremap <C-S> :w<CR>
