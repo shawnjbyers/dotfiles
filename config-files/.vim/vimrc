@@ -161,8 +161,8 @@ nnoremap <Leader><Tab> :nnoremap <lt>Tab> :w\\|:!
 
 
 function IsRoot()
-  let userid = system("id -u")
-  if userid == "0\n"
+  let userid = trim(system("id -u"))
+  if userid == "0"
     return 1
   else
     return 0
