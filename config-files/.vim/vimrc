@@ -23,6 +23,23 @@ function ExecFile(filepath, shouldUseSudo)
   return 0
 endfunction
 
+function CExecFile(filepath)
+  let executable = fnamemodify(a:filepath, ":r")
+  call system(
+      \"cc -Wall -Wextra -Werror -g -O0 -o "
+      \..shellescape(l:executable)
+      \.." "
+      \..shellescape(a:filepath)
+  \)
+
+  if v:shell_error != 0
+    echomsg "Could not compile file "..a:filepath
+    return
+  endif
+
+  call ExecFile(executable, 0)
+endfunction
+
 " enable syntax highlighting
 syntax on
 
@@ -100,9 +117,7 @@ autocmd FileType make,asm setlocal noexpandtab tabstop=8
 autocmd FileType c,asm map <CR> :w\|:!make run<CR>
 autocmd FileType c,asm map <Tab> :w\|:!make test<CR>
 
-autocmd FileType c map <BS> :w\|:!cc -Wall -Wextra -Werror -g -O0 -o '%:r' '%' && ./'%:r'<CR>
-" TODO: this will fail if the filename has a single quote or if it is an
-" absolute path
+autocmd FileType c map <BS> :w\|:call CExecFile(@%)<CR>
 
 autocmd FileType rust map <CR> :w\|:!cargo -q run<CR>
 autocmd FileType rust map <Tab> :w\|:!cargo -q test<CR>
