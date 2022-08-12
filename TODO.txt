@@ -24,3 +24,5 @@ Include bpftrace syntax highlighting for Vim and Neovim.
 
 Make zsh completion work for units even though it's aliased to a
 function.
+
+Figure out why zsh starts up so slowly.
