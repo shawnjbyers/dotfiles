@@ -106,7 +106,7 @@ autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
 autocmd FileType dart setlocal expandtab shiftwidth=2 tabstop=2
 
 " autoinsert a newline when a line gets too long
-autocmd FileType text setlocal textwidth=72
+autocmd FileType text,markdown setlocal textwidth=72
 
 " do not round indentation to a multiple of 'shiftwidth'
 autocmd FileType scheme,lisp setlocal noshiftround
