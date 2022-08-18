@@ -97,39 +97,41 @@ set showcmd
 " recognize .Rprofile
 autocmd BufEnter .Rprofile setlocal filetype=r
 
-" TODO: put all these in an augroup
+augroup personal
 
-" use four spaces for R
-autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
+  " use four spaces for R
+  autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
 
-" use two spaces for Dart
-autocmd FileType dart setlocal expandtab shiftwidth=2 tabstop=2
+  " use two spaces for Dart
+  autocmd FileType dart setlocal expandtab shiftwidth=2 tabstop=2
 
-" autoinsert a newline when a line gets too long
-autocmd FileType text,markdown setlocal textwidth=72
+  " autoinsert a newline when a line gets too long
+  autocmd FileType text,markdown setlocal textwidth=72
 
-" do not round indentation to a multiple of 'shiftwidth'
-autocmd FileType scheme,lisp setlocal noshiftround
+  " do not round indentation to a multiple of 'shiftwidth'
+  autocmd FileType scheme,lisp setlocal noshiftround
 
-" make sure tabs are real tabs and not expanded into spaces
-autocmd FileType make,asm setlocal noexpandtab tabstop=8
+  " make sure tabs are real tabs and not expanded into spaces
+  autocmd FileType make,asm setlocal noexpandtab tabstop=8
 
-autocmd FileType c,asm map <CR> :w\|:!make run<CR>
-autocmd FileType c,asm map <Tab> :w\|:!make test<CR>
+  autocmd FileType c,asm map <CR> :w\|:!make run<CR>
+  autocmd FileType c,asm map <Tab> :w\|:!make test<CR>
 
-autocmd FileType c map <BS> :w\|:call CExecFile(@%)<CR>
+  autocmd FileType c map <BS> :w\|:call CExecFile(@%)<CR>
 
-autocmd FileType rust map <CR> :w\|:!cargo -q run<CR>
-autocmd FileType rust map <Tab> :w\|:!cargo -q test<CR>
-autocmd FileType java map <CR> :w\|:!mvn -q run<CR>
-autocmd FileType java map <Tab> :w\|:!mvn -q test<CR>
-autocmd FileType java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
-autocmd FileType text map <CR> :w<CR>
-autocmd FileType tex,plaintex map <CR> :w\|:!make run<CR><CR>
-autocmd FileType tex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
-" TODO: support more pdf readers
-autocmd FileType tex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
-autocmd FileType stp,d,bpftrace map <CR> :w\|:call ExecFile(@%, 1)<CR>
+  autocmd FileType rust map <CR> :w\|:!cargo -q run<CR>
+  autocmd FileType rust map <Tab> :w\|:!cargo -q test<CR>
+  autocmd FileType java map <CR> :w\|:!mvn -q run<CR>
+  autocmd FileType java map <Tab> :w\|:!mvn -q test<CR>
+  autocmd FileType java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
+  autocmd FileType text map <CR> :w<CR>
+  autocmd FileType tex,plaintex map <CR> :w\|:!make run<CR><CR>
+  autocmd FileType tex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
+  " TODO: support more pdf readers
+  autocmd FileType tex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
+  autocmd FileType stp,d,bpftrace map <CR> :w\|:call ExecFile(@%, 1)<CR>
+
+augroup END
 
 " these mappings save the current file
 nnoremap <C-S> :w<CR>
