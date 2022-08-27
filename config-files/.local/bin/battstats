@@ -3,6 +3,7 @@
 import argparse
 import os
 import shlex
+import sys
 
 cmd_name = 'battstats'
 version = '0.1.0'
@@ -33,6 +34,8 @@ def get_battery_stats(*, power_supply_dir):
             charge_now, charge_full, charge_full_design
 
 def main():
+    exit_status = 0
+
     parser = argparse.ArgumentParser(
         prog=cmd_name,
         description='Print statistics about available batteries.',
@@ -55,10 +58,20 @@ def main():
         name, capacity, status, \
             charge_now, charge_full, charge_full_design = bat
         computed_capacity = charge_now / charge_full * 100
-        assert round(computed_capacity) == capacity
+        if round(computed_capacity) != capacity:
+            print(
+                f'{cmd_name}: error: computed_capacity != capacity',
+                f'computed_capacity == {computed_capacity}',
+                f'capacity == {capacity}',
+                sep='\n',
+                file=sys.stderr
+            )
+            exit_status = 1
         health = charge_full / charge_full_design * 100
         print(f'{shlex.quote(name)}: {status} ' + \
             f'{computed_capacity:.1f}% Health {health:.1f}%')
+
+    sys.exit(exit_status)
 
 if __name__ == '__main__':
     main()
