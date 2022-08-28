@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import math
 import os
 import shlex
 import sys
@@ -58,9 +59,9 @@ def main():
         name, capacity, status, \
             charge_now, charge_full, charge_full_design = bat
         computed_capacity = charge_now / charge_full * 100
-        if round(computed_capacity) != capacity:
+        if math.floor(computed_capacity) != capacity:
             print(
-                f'{cmd_name}: error: computed_capacity != capacity',
+                f'{cmd_name}: error: floor(computed_capacity) != capacity',
                 f'computed_capacity == {computed_capacity}',
                 f'capacity == {capacity}',
                 sep='\n',
