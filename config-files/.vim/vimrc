@@ -48,6 +48,10 @@ function InteractiveLatexCompile(filepath)
   endif
 endfunction
 
+function MakeExecutable(filepath)
+  call system("chmod -- u+x "..shellescape(a:filepath))
+endfunction
+
 " enable syntax highlighting
 syntax on
 
@@ -157,11 +161,8 @@ nnoremap <Leader>d :r !datetime \|\| date +'\%Y-\%m-\%dT\%T'<CR>kJ
 
 " this mapping makes the current file executable
 " posix-compliant: POSIX.1-2008
-nnoremap <Leader>x :w\|:silent !chmod -- u+x '%'<CR>:redraw!<CR>
-" Note: ``silent'' suppresses messages and ``redraw'' redraws the screen. the
+nnoremap <Leader>x :w\|:call MakeExecutable(@%)\|:redraw!<CR>
 " ``set autoread'' found earlier suppresses a vim warning
-" TODO: this ^^ will fail when the filename (%) has a single quote in it.
-" there might be no way to fix this with pure VimScript
 
 " executes the current file
 nnoremap <Leader>e :w\|:call ExecFile(@%, 0)<CR>
