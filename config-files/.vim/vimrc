@@ -40,6 +40,14 @@ function CExecFile(filepath)
   call ExecFile(executable, 0)
 endfunction
 
+function InteractiveLatexCompile(filepath)
+  let command = "pdflatex -- "..shellescape(a:filepath)
+  call system(l:command)
+  if v:shell_error != 0
+    execute "!"..l:command
+  endif
+endfunction
+
 " enable syntax highlighting
 syntax on
 
@@ -126,7 +134,7 @@ augroup personal
   autocmd FileType java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
   autocmd FileType text map <CR> :w<CR>
   autocmd FileType tex,plaintex map <CR> :w\|:!make run<CR><CR>
-  autocmd FileType tex map <BS> :w\|:!pdflatex -- '%'<CR><CR>
+  autocmd FileType tex map <BS> :w\|:call InteractiveLatexCompile(@%)<CR>
   " TODO: support more pdf readers
   autocmd FileType tex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
   autocmd FileType stp,d,bpftrace map <CR> :w\|:call ExecFile(@%, 1)<CR>
