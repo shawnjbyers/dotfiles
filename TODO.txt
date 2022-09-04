@@ -1,4 +1,4 @@
-find . -type f ! -path '*/.git/*' -exec grep -E -- 'TODO|XXX' '{}' +
+git grep -E '[T]ODO|[X]XX'
 
 Use XDG basedirs for ~/.gdbinit and other things.
 gtkboard
