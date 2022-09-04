@@ -69,6 +69,12 @@ function MakeExecutable(filepath)
   call InteractiveSystem("chmod -- u+x "..shellescape(a:filepath))
 endfunction
 
+function LaunchPdfReader(filepath)
+  call system("(zathura -- "..shellescape(a:filepath).." &)")
+  " TODO: Support other PDF readers like mupdf, evince, and fall back to
+  " xdg-open.
+endfunction
+
 " enable syntax highlighting
 syntax on
 
@@ -156,8 +162,7 @@ augroup personal
   autocmd FileType text map <CR> :w<CR>
   autocmd FileType tex,plaintex map <CR> :w\|:!make run<CR><CR>
   autocmd FileType tex map <BS> :w\|:call InteractiveLatexCompile(@%)<CR>
-  " TODO: support more pdf readers
-  autocmd FileType tex map <Tab> :w\|:!(zathura -- '%:r'.pdf &)<CR><CR>
+  autocmd FileType tex map <Tab> :w\|:call LaunchPdfReader(fnamemodify(@%, ":r")..".pdf")<CR>
   autocmd FileType stp,d,bpftrace map <CR> :w\|:call ExecFile(@%, 1)<CR>
 
 augroup END
