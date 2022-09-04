@@ -1,5 +1,13 @@
 set encoding=utf-8
 
+function InteractiveSystem(command)
+  call system(a:command)
+
+  if v:shell_error != 0
+    execute "!"..a:command
+  endif
+endfunction
+
 " Executes the file currently being edited if the file exists.
 function ExecFile(filepath, shouldUseSudo)
   if len(a:filepath) == 0
@@ -25,7 +33,7 @@ endfunction
 
 function CExecFile(filepath)
   let executable = fnamemodify(a:filepath, ":r")
-  call system(
+  call InteractiveSystem(
       \"cc -Wall -Wextra -Werror -g -O0 -o "
       \..shellescape(l:executable)
       \.." "
@@ -41,15 +49,11 @@ function CExecFile(filepath)
 endfunction
 
 function InteractiveLatexCompile(filepath)
-  let command = "pdflatex -- "..shellescape(a:filepath)
-  call system(l:command)
-  if v:shell_error != 0
-    execute "!"..l:command
-  endif
+  call InteractiveSystem("pdflatex -- "..shellescape(a:filepath))
 endfunction
 
 function MakeExecutable(filepath)
-  call system("chmod -- u+x "..shellescape(a:filepath))
+  call InteractiveSystem("chmod -- u+x "..shellescape(a:filepath))
 endfunction
 
 " enable syntax highlighting
