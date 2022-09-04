@@ -48,9 +48,22 @@ function CExecFile(filepath)
   call ExecFile(executable, 0)
 endfunction
 
+function JavaExecFile(filepath)
+  call InteractiveSystem("javac "..shellescape(a:filepath))
+
+  if v:shell_error != 0
+    return
+  endif
+
+  let classname = fnamemodify(a:filepath, ":r")
+
+  execute "!java -enableassertions "..shellescape(l:classname)
+endfunction
+
 function InteractiveLatexCompile(filepath)
   call InteractiveSystem("pdflatex -- "..shellescape(a:filepath))
 endfunction
+
 
 function MakeExecutable(filepath)
   call InteractiveSystem("chmod -- u+x "..shellescape(a:filepath))
@@ -139,7 +152,7 @@ augroup personal
   autocmd FileType rust map <Tab> :w\|:!cargo -q test<CR>
   autocmd FileType java map <CR> :w\|:!mvn -q run<CR>
   autocmd FileType java map <Tab> :w\|:!mvn -q test<CR>
-  autocmd FileType java map <BS> :w\|:!javac '%' && java -ea '%:r'<CR>
+  autocmd FileType java map <BS> :w\|:call JavaExecFile(@%)<CR>
   autocmd FileType text map <CR> :w<CR>
   autocmd FileType tex,plaintex map <CR> :w\|:!make run<CR><CR>
   autocmd FileType tex map <BS> :w\|:call InteractiveLatexCompile(@%)<CR>
