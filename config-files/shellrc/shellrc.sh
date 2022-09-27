@@ -205,8 +205,6 @@ if is_interactive; then
 
   ### BASIC SETUP ###
 
-  #set -u # error on use of an unset variable
-
   umask u=rwx,go= # restrictive creation mode
 
   export LESSHISTFILE='-' # disable on-drive history for less
@@ -539,8 +537,6 @@ if is_interactive; then
 #      done
 #    done
   fi
-
-  set -u # error on use of an unset variable
 fi
 
 __old_path="$PATH"
