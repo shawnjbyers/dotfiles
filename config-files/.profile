@@ -1,11 +1,11 @@
 if [ "${HOME-}" != '' ]
 then
-	if [ -d "${HOME}/.local/bin" ]
+	if [ -d ~/.local/bin ]
 	then
 		export PATH="${PATH}:${HOME}/.local/bin"
 	fi
 
-	if [ -d "${HOME}/.pub-cache/bin" ]
+	if [ -d ~/.pub-cache/bin ]
 	then
 		export PATH="${PATH}:${HOME}/.pub-cache/bin"
 	fi
