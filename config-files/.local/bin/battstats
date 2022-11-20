@@ -26,10 +26,16 @@ def get_battery_stats(*, power_supply_dir):
         batt_path = ps_path
         capacity = int(read_strip_file(f'{batt_path}/capacity'))
         status = read_strip_file(f'{batt_path}/status')
-        charge_now = int(read_strip_file(f'{batt_path}/charge_now'))
-        charge_full = int(read_strip_file(f'{batt_path}/charge_full'))
-        charge_full_design = \
-            int(read_strip_file(f'{batt_path}/charge_full_design'))
+        try:
+            charge_now = int(read_strip_file(f'{batt_path}/charge_now'))
+            charge_full = int(read_strip_file(f'{batt_path}/charge_full'))
+            charge_full_design = \
+                int(read_strip_file(f'{batt_path}/charge_full_design'))
+        except FileNotFoundError:
+            charge_now = int(read_strip_file(f'{batt_path}/energy_now'))
+            charge_full = int(read_strip_file(f'{batt_path}/energy_full'))
+            charge_full_design = \
+                int(read_strip_file(f'{batt_path}/energy_full_design'))
 
         yield de.name, capacity, status, \
             charge_now, charge_full, charge_full_design
