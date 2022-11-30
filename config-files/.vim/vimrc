@@ -86,6 +86,9 @@ set noautoindent
 set nosmartindent
 set nocindent
 
+" use only one space after periods with J or gq commands
+set nojoinspaces
+
 " lines should wrap not get cut off
 set wrap
 
