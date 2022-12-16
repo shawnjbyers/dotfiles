@@ -176,8 +176,9 @@ inoremap <C-S> <C-O>:w<CR>
 
 " these mappings force the user to use extended regular expressions (EREs)
 " when searching
-nnoremap / i<CR>USE /\v INSTEAD<CR><CR>
+nnoremap / i<CR>USE /\v OR /\V INSTEAD<CR><CR>
 nnoremap /<Bslash>v /<Bslash>v
+nnoremap /<Bslash>V /<Bslash>V
 
 " this mapping inserts the date and time
 " posix-compliant: POSIX.1-2008
