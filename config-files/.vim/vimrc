@@ -157,6 +157,9 @@ augroup personal
 
   autocmd FileType c map <BS> :w\|:call CExecFile(@%)<CR>
 
+  " run mypy on tab for python files
+  autocmd FileType python map <Tab> :w\|:execute "!mypy --strict "..shellescape(@%)<CR>
+
   autocmd FileType rust map <CR> :w\|:!cargo -q run<CR>
   autocmd FileType rust map <Tab> :w\|:!cargo -q test<CR>
   autocmd FileType java map <CR> :w\|:!mvn -q run<CR>
