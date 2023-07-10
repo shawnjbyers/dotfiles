@@ -1,0 +1,7 @@
+#compdef translate-sysexits
+
+_arguments -C \
+	\*{-h,--help}'[display help information]' \
+	\*{-V,--version}'[display version information]' \
+	\*{-L,--language=}'[target language of translation]' \
+	'--file=[alternate sysexits file to process]:filename:_files'
