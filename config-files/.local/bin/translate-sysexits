@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""Translate sysexits.h into other languages.
+
+This is intended for use as a quick and dirty way to get an overview of
+sysexits.h and translate it into other languages for use in a library.
+You will have to translate the copyright message and surrounding
+documentation yourself.
+"""
+
+__version__ = "0.1.0"
+
+import argparse
+import dataclasses
+import re
+import sys
+import typing
+from typing import List, NoReturn
+
+COMMAND_NAME = "translate-sysexits"
+
+DEFAULT_SYSEXITS_FILE = "/usr/include/sysexits.h"
+
+EX_USAGE = 64 # Command line usage error
+EX_SOFTWARE = 70 # Internal software error
+
+@dataclasses.dataclass
+class SystemExitDefinition:
+    """A definition for a system exit status.
+
+    This stores the name, value and comment associated with a system
+    exit status in sysexits.h.
+    """
+
+    name: str
+    value: int
+    comment: str
+
+ParsedSystemExits = List[SystemExitDefinition]
+
+class SystemExitArgumentParser(argparse.ArgumentParser):
+    """A version of ArgumentParser that uses sysexits.h.
+
+    This will use the standard return codes in sysexits.h and exit with
+    64 (EX_USAGE) instead of 2 when the user provides invalid command
+    line arguments.
+    """
+
+    def error(self, message: str) -> NoReturn:
+        """Print a usage message to stderr and exit with code 64."""
+
+        self.print_usage()
+        self.exit(EX_USAGE, f"{self.prog}: error: {message}\n")
+
+def warn(message: str) -> None:
+    """Print to stderr with the name of this command prepended."""
+
+    print(f"{COMMAND_NAME}: {message}", file=sys.stderr)
+
+def parse_sysexits_file(filestream: typing.TextIO) -> ParsedSystemExits:
+    """Parse the file and return the definitions in a list.
+
+    It is assumed that the given file takes the form of sysexits.h.
+    """
+
+    lines = filestream.readlines()
+
+    partial_def_pattern = r"^\s*#\s*define\s+EX_.*$"
+
+    name_pattern = r"(?P<name>EX_\w+)"
+    value_pattern = r"(?P<value>\d+)"
+    comment_pattern = r"(?P<unstripped_comment>.*)"
+
+    full_def_pattern = (r"^#\s*define\s+"
+                        + name_pattern
+                        + r"\s+"
+                        + value_pattern
+                        + r"\s+/[*]"
+                        + comment_pattern
+                        + r"[*]/$")
+
+    partial_def_re = re.compile(partial_def_pattern)
+    full_def_re = re.compile(full_def_pattern)
+
+    defs = []
+
+    for line in lines:
+        if partial_def_re.match(line) is None:
+            continue
+
+        match = full_def_re.fullmatch(line.strip())
+        assert match is not None
+
+        defs.append(
+            SystemExitDefinition(
+                match.group("name"),
+                int(match.group("value")),
+                match.group("unstripped_comment").strip(),
+                )
+            )
+
+    return defs
+
+def format_defs_python3(system_defs: ParsedSystemExits) -> str:
+    """Format the given definitions into proper python3."""
+
+    text = ""
+
+    for define in system_defs:
+        pycomment = define.comment.capitalize()
+        text += f"{define.name} = {define.value}  # {pycomment}\n"
+
+    return text
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+
+    parser = SystemExitArgumentParser(
+        prog=COMMAND_NAME,
+        description=__doc__,
+        allow_abbrev=False,
+        )
+
+    parser.add_argument(
+        "-V", "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        )
+
+    parser.add_argument(
+        "-L", "--language",
+        dest="target_language",
+        required=True,
+        choices=["python3"],
+        )
+
+    parser.add_argument(
+        "--file", dest="sysexits_file",
+        type=argparse.FileType(encoding="UTF-8"),
+        default=DEFAULT_SYSEXITS_FILE,
+        )
+
+    return parser.parse_args()
+
+def main() -> None:
+    """Run as the entry point of the script."""
+
+    args = parse_args()
+
+    defs = parse_sysexits_file(args.sysexits_file)
+
+    if args.target_language == "python3":
+        formatted_text = format_defs_python3(defs)
+    else:
+        message = ("internal error: unrecognized target language: "
+                   + args.target_language)
+        warn(message)
+        sys.exit(EX_SOFTWARE)
+
+    print(formatted_text, end="")
+
+if __name__ == "__main__":
+    main()
