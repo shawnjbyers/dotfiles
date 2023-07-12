@@ -1,31 +1,56 @@
 #!/usr/bin/env python3
+"""Print the date and time with an ISO 8601 format."""
+
+__version__ = "0.1.0"
 
 import argparse
 import re
 import time
+from typing import NoReturn
 import unicodedata
 
-cmd_name = 'datetime'
-version = '0.1.0'
-minus_sign = unicodedata.lookup('MINUS SIGN')
+COMMAND_NAME = "datetime"
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        prog=cmd_name,
-        description='Prints the date and time with an ISO 8601 format.',
-        allow_abbrev=False
-    )
+EX_USAGE = 64 # Command line usage error
+
+class SystemExitArgumentParser(argparse.ArgumentParser):
+    """A version of ArgumentParser that uses sysexits.h.
+
+    This will use the standard return codes in sysexits.h and exit with
+    64 (EX_USAGE) instead of 2 when the user provides invalid command
+    line arguments.
+    """
+
+    def error(self, message: str) -> NoReturn:
+        """Print a message to stderr and exit with code 64."""
+
+        self.print_usage()
+        self.exit(EX_USAGE, f"{self.prog}: error: {message}\n")
+
+def main() -> None:
+    """Run as the entry point of the script."""
+
+    parser = SystemExitArgumentParser(
+        prog=COMMAND_NAME,
+        description=__doc__,
+        allow_abbrev=False,
+        )
 
     parser.add_argument(
-        '-V', '--version', action='version', version=f'%(prog)s {version}'
-    )
+        "-V", "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        )
 
     parser.parse_args()
 
-    ascii_time = time.strftime('%FT%T%z')
+    ascii_time = time.strftime("%FT%T%z")
     unicode_time = re.sub(
-        r'^(.*)-(\d{4})$',
-        f'\\1{minus_sign}\\2',
-        ascii_time
-    )
+        r"^(.*)-(\d{4})$",
+        f"\\1\N{MINUS SIGN}\\2",
+        ascii_time,
+        )
     print(unicode_time)
+
+if __name__ == "__main__":
+    main()
