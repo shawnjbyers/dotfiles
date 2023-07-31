@@ -411,10 +411,12 @@ if is_interactive; then
 
   __units_helper() {
     if [ $# = 0 ]; then
-      echo 'user error. try one of the following:'
+      echo '__units_helper: user error: try one of the following:'
       echo '$ units --one-line'
       echo '$ units -1'
-      return 64
+      printf '%s\n' '$ \units'
+      local ex_usage=64 # command line usage error
+      return "$ex_usage"
     else
       \units "$@"
     fi
