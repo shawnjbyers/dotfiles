@@ -70,7 +70,20 @@ function MakeExecutable(filepath)
 endfunction
 
 function LaunchPdfReader(filepath)
-  call system("(zathura -- "..shellescape(a:filepath).." &)")
+  call system("command -v SumatraPDF > /dev/null 2>&1")
+
+  if v:shell_error == 0
+    call system("(SumatraPDF "..shellescape(a:filepath).." &)")
+    return
+  endif
+
+  call system("command -v zathura > /dev/null 2>&1")
+
+  if v:shell_error == 0
+    call system("(zathura -- "..shellescape(a:filepath).." &)")
+    return
+  endif
+
   " TODO: Support other PDF readers like mupdf, evince, and fall back to
   " xdg-open.
 endfunction
