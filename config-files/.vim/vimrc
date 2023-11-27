@@ -141,8 +141,17 @@ highlight TrailingSpaces
   \ guibg=red guifg=black
 match TrailingSpaces /\v\s+$/
 
+" highlight trailing characters on overlong lines
+highlight LongLineEnding
+  \ ctermbg=yellow ctermfg=black
+  \ guibg=yellow guifg=black
+2match LongLineEnding /\v%>72v[^[:space:]]+/
+
 " reset highlighting to default on man pages
 autocmd FileType man highlight clear
+
+" don't highlight line endings on git filetypes
+autocmd FileType git* highlight clear LongLineEnding
 
 " show as much of the current line as possible if it doesn't fit on the screen
 set display=lastline
