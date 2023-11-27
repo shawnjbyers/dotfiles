@@ -136,7 +136,9 @@ set listchars=tab:>~
 set list
 
 " highlight trailing whitespace on a line in red
-highlight TrailingSpaces ctermbg=red guibg=red
+highlight TrailingSpaces
+  \ ctermbg=red ctermfg=black
+  \ guibg=red guifg=black
 match TrailingSpaces /\v\s+$/
 
 " show as much of the current line as possible if it doesn't fit on the screen
