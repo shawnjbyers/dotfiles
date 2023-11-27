@@ -141,6 +141,9 @@ highlight TrailingSpaces
   \ guibg=red guifg=black
 match TrailingSpaces /\v\s+$/
 
+" reset highlighting to default on man pages
+autocmd FileType man highlight clear
+
 " show as much of the current line as possible if it doesn't fit on the screen
 set display=lastline
 
