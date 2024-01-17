@@ -62,6 +62,19 @@ endfunction
 
 function InteractiveLatexCompile(filepath)
   call InteractiveSystem("pdflatex -- "..shellescape(a:filepath))
+
+  if v:shell_error != 0
+    return
+  endif
+
+  let l:stripped_filepath = fnamemodify(a:filepath, ":r")
+
+  call system(
+    \"rm -- "
+    \..shellescape(l:stripped_filepath..".log")
+    \.." "
+    \..shellescape(l:stripped_filepath..".aux")
+  \)
 endfunction
 
 
