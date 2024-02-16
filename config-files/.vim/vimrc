@@ -178,7 +178,7 @@ autocmd BufEnter .Rprofile setlocal filetype=r
 augroup personal
 
   " use four spaces for R
-  autocmd FileType r setlocal expandtab shiftwidth=4 tabstop=4
+  autocmd FileType r setlocal expandtab shiftwidth=2 tabstop=2
 
   " use two spaces for Dart
   autocmd FileType dart setlocal expandtab shiftwidth=2 tabstop=2
