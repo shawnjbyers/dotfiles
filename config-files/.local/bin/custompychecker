@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""Type check and lint a Python file."""
+
+__version__ = "0.1.0"
+
+import argparse
+import dataclasses
+import pathlib
+import re
+import sys
+import subprocess
+
+COMMAND_NAME = "custompychecker"
+
+@dataclasses.dataclass
+class MypyVersion:
+    """A dataclass for Mypy version information."""
+    major: int
+    minor: int
+    patch: int
+    dev: bool
+
+class MypyError(Exception):
+    """An exception for errors calling Mypy."""
+
+def mypy_version() -> str:
+    """Runs the mypy command and returns the version string.
+
+    This will call "mypy --version" and return the version string
+    printed to stdout. For example "1.7.0".
+    """
+
+    try:
+        mypy_proc = subprocess.run(["mypy", "--version"],
+                                   capture_output=True,
+                                   check=True)
+    except (FileNotFoundError, subprocess.CalledProcessError) as error:
+        raise MypyError("error in calling mypy") from error
+
+    try:
+        output = mypy_proc.stdout.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise MypyError("error in decoding mypy output") from error
+
+    try:
+        return output.split(" ")[1]
+    except IndexError as error:
+        raise MypyError("error splitting mypy output") from error
+
+def mypy_version_object() -> MypyVersion:
+    """Calls Mypy and returns a MypyVersion object.
+
+    This function will call Mypy through the mypy_version() function
+    then parse the result to return a MypyVersion object.
+    """
+
+    mypy_ver = mypy_version()
+
+    major = minor = patch = dev = None
+
+    maybe_match = re.fullmatch(r"^(0).(\d{3})[+]dev$", mypy_ver)
+    if maybe_match is not None:
+        major = "0"
+        minor = maybe_match.group(2)
+        patch = "0"
+        dev = True
+
+    maybe_match = re.fullmatch(r"^(0).(\d{3})$", mypy_ver)
+    if maybe_match is not None:
+        major = "0"
+        minor = maybe_match.group(2)
+        patch = "0"
+        dev = False
+
+    maybe_match = re.fullmatch(r"^(\d+).(\d+).(\d+)[+]dev$", mypy_ver)
+    if maybe_match is not None:
+        major = maybe_match.group(1)
+        minor = maybe_match.group(2)
+        patch = maybe_match.group(3)
+        dev = True
+
+    maybe_match = re.fullmatch(r"^(\d+).(\d+).(\d+)$", mypy_ver)
+    if maybe_match is not None:
+        major = maybe_match.group(1)
+        minor = maybe_match.group(2)
+        patch = maybe_match.group(3)
+        dev = True
+
+    if major is None or minor is None or patch is None or dev is None:
+        raise MypyError("error parsing version string")
+
+    return MypyVersion(int(major), int(minor), int(patch), dev)
+
+def call_mypy(script: pathlib.Path) -> int:
+    """Runs Mypy on the given Python script with custom options."""
+
+    mypy_options = [
+        "--strict",
+        "--show-error-codes",
+        "--warn-unused-ignores",
+        ]
+
+    try:
+        mvp = mypy_version_object()
+    except MypyError:
+        return 1
+
+    if mvp.major > 0 or mvp.minor >= 800:
+        mypy_options.append("--enable-error-code=ignore-without-code")
+
+    command = ["mypy"] + mypy_options + ["--", script.name]
+    # pylint: disable-next=subprocess-run-check
+    mypy_proc = subprocess.run(command)
+
+    return mypy_proc.returncode
+
+def call_pylint(script: pathlib.Path) -> int:
+    """Runs Pylint on the given script with custom options."""
+
+    pylint_options = [
+        "--module-rgx=^[a-z0-9-]+$",
+    ]
+
+    command = ["pylint"] + pylint_options + ["--", script.name]
+    # pylint: disable-next=subprocess-run-check
+    pylint_proc = subprocess.run(command)
+
+    return pylint_proc.returncode
+
+def main() -> None:
+    """Runs as the entry point of the script."""
+
+    parser = argparse.ArgumentParser(
+        prog=COMMAND_NAME,
+        description=__doc__,
+        allow_abbrev=False,
+        )
+
+    parser.add_argument(
+        "-V", "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        )
+
+    parser.add_argument(
+        "script_path",
+        help="a path to a Python file",
+        type=pathlib.Path,
+        )
+
+    args = parser.parse_args()
+
+    mypy_status = call_mypy(args.script_path)
+    pylint_status = call_pylint(args.script_path)
+
+    if mypy_status != 0 or pylint_status != 0:
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
