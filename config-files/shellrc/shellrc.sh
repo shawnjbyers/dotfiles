@@ -186,23 +186,6 @@ if is_interactive; then
     fi
   fi
 
-  if [ "${user_id}" = '0' ]; then
-    # root
-    alias emerge='emerge --ask --quiet'
-  else
-    # normal user
-    alias dtrace='sudo dtrace'
-    alias stap='sudo stap'
-    alias bpftrace='sudo bpftrace'
-    alias poweroff='sudo poweroff'
-    alias s2ram='sudo s2ram'
-    alias grub-mkconfig='sudo grub-mkconfig'
-    alias dispatch-conf='sudo dispatch-conf'
-    alias eclean-kernel='sudo eclean-kernel'
-    alias emerge='sudo emerge --ask --quiet'
-    alias emerge-webrsync='sudo emerge-webrsync'
-  fi
-
   ### BASIC SETUP ###
 
   umask u=rwx,go= # restrictive creation mode
@@ -259,21 +242,6 @@ if is_interactive; then
   else
     "$@" &
   fi
-  )
-
-  # useful for if you install a program during the lifetime of your shell
-  rereadpath() (
-  echo 'try this:'
-  echo 'hash -r'
-  )
-
-  less() (
-  echo 'try one of these:'
-  echo "nvim -c 'set nomod' -"
-  echo "vim -c 'set nomod' -"
-  echo 'vi -'
-  echo 'command less'
-  echo 'more'
   )
 
   rmdot() {
@@ -424,11 +392,6 @@ if is_interactive; then
 
   alias units='__units_helper'
 
-  alias cargo='cargo -q'
-  alias gdb='gdb -q'
-  alias mvn='mvn -q'
-  alias clisp='clisp -q'
-
   # use hyphens instead of dashes on man pages so you can search for flags
   alias man='LC_ALL=POSIX man'
 
@@ -494,28 +457,9 @@ if is_interactive; then
     alias lsna='command ls -F'
   fi
 
-  alias please='sudo'
-  alias plz='sudo'
-
   alias shellcheck='shellcheck --enable=all --severity=style --check-sourced --external-sources'
 
   alias youtube-dl-music-playlist='youtube-dl -x --audio-format=mp3 --audio-quality=0 -o '\''%(playlist_index)s %(title)s.%(ext)s'\'
-
-  if command -v 'rlwrap' > /dev/null 2>&1; then
-    if [ "${XDG_DATA_HOME-}" != '' ]; then
-      RLWRAP_HOME="${XDG_DATA_HOME}"'/rlwrap'
-    else
-      if [ "${HOME-}" = '' ]; then
-        echo 'shellrc: ${HOME} is unset or empty' >&2
-      else
-        RLWRAP_HOME="${HOME}"'/.local/share/rlwrap'
-      fi
-    fi
-
-    alias node='NODE_NO_READLINE=1 rlwrap node'
-    alias posh='rlwrap posh'
-    alias dash='rlwrap dash'
-  fi
 
   if is_zsh; then
     # enable syntax highlighting if it's installed
@@ -523,24 +467,10 @@ if is_interactive; then
     . "${zsh_syntax_filename}" || {
       printf 'shellrc: failure in sourcing highlight file %s\n' "${zsh_syntax_filename}" >&2
     }
-#    for prefix in /usr/local /usr; do
-#      for share_dir in zsh-syntax-highlighting zsh/site-functions; do
-#        zsh_syntax_filename=zsh-syntax-highlighting.zsh
-#        zsh_syntax_hlf="${prefix}/share/${share_dir}/${zsh_syntax_filename}"
-#        if [ -f "${zsh_syntax_hlf}" ]; then
-#          . "${zsh_syntax_hlf}" || {
-#            printf 'shellrc: failure in sourcing highlight file %s\n' \
-#              "${zsh_syntax_hlf}" >&2
-#            # we should still break because it might just be a bug in the
-#            # highlight file
-#          }
-#          break 2
-#        fi
-#      done
-#    done
   fi
 fi
 
+# Make sure every entry is unique in $PATH. No duplicates.
 __old_path="$PATH"
 if __new_path="$(printf '%s\n' "$PATH" | tr ':' '\n' | awk '!uniq[$0]++' | tr '\n' : | sed -E 's/:$/\n/')"; then
   PATH="$__new_path"
