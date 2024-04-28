@@ -1,23 +1,72 @@
 #!/usr/bin/env python3
+"""Print statistics for each battery available to the system.
+
+For each battery available, this script will print its name, status,
+current charge percentage, and health percentage.
+"""
+
+__version__ = '0.1.1'
 
 import argparse
+from dataclasses import dataclass
 import math
 import os
 import shlex
 import sys
+from typing import Generator
 
-cmd_name = 'battstats'
-version = '0.1.1'
+COMMAND_NAME = 'battstats'
 
-def read_strip_file(filename):
-    with open(filename) as f:
-        return f.read().strip()
+@dataclass
+class BatteryInfo:
+    """Stores information for one battery.
 
-def get_battery_stats(*, power_supply_dir):
-    for de in os.scandir(power_supply_dir):
-        if not de.is_dir():
+    The name is the simply the name of the battery. An example is BAT0
+    or BAT1.
+
+    The capacity is the current battery charge percentage as an integer.
+    This can take a value from 0 to 100.
+
+    The status is the current status of the battery. It can be one of
+    'Charging', 'Discharging', 'Full', or 'Unknown'.
+
+    The charge_now, charge_full, and charge_full_design represent values
+    in microamphours.
+
+    Further information can be found in the kernel documentation.
+    https://www.kernel.org/doc/html/latest/power/power_supply_class.html
+    """
+
+    name: str
+    capacity: int
+    status: str
+    charge_now: int
+    charge_full: int
+    charge_full_design: int
+
+def read_strip_file(filename: str) -> str:
+    """Reads a file and strips the whitespace."""
+
+    with open(filename, encoding='utf-8') as filestream:
+        return filestream.read().strip()
+
+def get_battery_stats(
+        *, power_supply_dir: str
+        ) -> Generator[BatteryInfo, None, None]:
+    """Returns BatteryInfo for available batteries as a Generator.
+
+    The power_supply_dir argument specifies which directory to look in
+    for the battery directories. A good default would be
+    /sys/class/power_supply.
+
+    The function will return BatteryInfo for each battery found in the
+    power_supply_dir.
+    """
+
+    for direntry in os.scandir(power_supply_dir):
+        if not direntry.is_dir():
             continue
-        ps_path = de.path
+        ps_path = direntry.path
 
         ps_type = read_strip_file(f'{ps_path}/type')
         if ps_type != 'Battery':
@@ -28,29 +77,36 @@ def get_battery_stats(*, power_supply_dir):
         status = read_strip_file(f'{batt_path}/status')
         try:
             charge_now = int(read_strip_file(f'{batt_path}/charge_now'))
-            charge_full = int(read_strip_file(f'{batt_path}/charge_full'))
+            charge_full = \
+                int(read_strip_file(f'{batt_path}/charge_full'))
             charge_full_design = \
                 int(read_strip_file(f'{batt_path}/charge_full_design'))
         except FileNotFoundError:
             charge_now = int(read_strip_file(f'{batt_path}/energy_now'))
-            charge_full = int(read_strip_file(f'{batt_path}/energy_full'))
+            charge_full = \
+                int(read_strip_file(f'{batt_path}/energy_full'))
             charge_full_design = \
                 int(read_strip_file(f'{batt_path}/energy_full_design'))
 
-        yield de.name, capacity, status, \
+        yield BatteryInfo(
+            direntry.name, capacity, status,
             charge_now, charge_full, charge_full_design
+            )
 
-def main():
+def main() -> None:
+    """Runs as the entry point of the script."""
+
     exit_status = 0
 
     parser = argparse.ArgumentParser(
-        prog=cmd_name,
+        prog=COMMAND_NAME,
         description='Print statistics about available batteries.',
         allow_abbrev=False
     )
 
     parser.add_argument(
-        '-V', '--version', action='version', version=f'%(prog)s {version}'
+        '-V', '--version', action='version',
+        version=f'%(prog)s {__version__}',
     )
 
     parser.add_argument(
@@ -61,21 +117,23 @@ def main():
 
     args = parser.parse_args()
 
-    for bat in get_battery_stats(power_supply_dir=args.power_supply_dir):
-        name, capacity, status, \
-            charge_now, charge_full, charge_full_design = bat
-        computed_capacity = charge_now / charge_full * 100
-        if math.floor(computed_capacity) != capacity:
+    batteries = get_battery_stats(
+        power_supply_dir=args.power_supply_dir
+        )
+    for bat in batteries:
+        computed_capacity = bat.charge_now / bat.charge_full * 100
+        if math.floor(computed_capacity) != bat.capacity:
             print(
-                f'{cmd_name}: error: floor(computed_capacity) != capacity',
+                (f'{COMMAND_NAME}: error: '
+                 + 'floor(computed_capacity) != capacity'),
                 f'computed_capacity == {computed_capacity}',
-                f'capacity == {capacity}',
+                f'capacity == {bat.capacity}',
                 sep='\n',
                 file=sys.stderr
             )
             exit_status = 1
-        health = charge_full / charge_full_design * 100
-        print(f'{shlex.quote(name)}: {status} ' + \
+        health = bat.charge_full / bat.charge_full_design * 100
+        print(f'{shlex.quote(bat.name)}: {bat.status} ' + \
             f'{computed_capacity:.1f}% Health {health:.1f}%')
 
     sys.exit(exit_status)
