@@ -7,7 +7,6 @@ import argparse
 import re
 import time
 from typing import NoReturn
-import unicodedata
 
 COMMAND_NAME = "datetime"
 
@@ -47,7 +46,7 @@ def main() -> None:
     ascii_time = time.strftime("%FT%T%z")
     unicode_time = re.sub(
         r"^(.*)-(\d{4})$",
-        f"\\1\N{MINUS SIGN}\\2",
+        "\\1\N{MINUS SIGN}\\2",
         ascii_time,
         )
     print(unicode_time)
