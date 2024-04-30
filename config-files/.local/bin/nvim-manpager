@@ -14,7 +14,8 @@ readonly vim_settings='
 set filetype=man nomodified nolist norelativenumber nonumber
 '
 
-readonly basename="$(basename -- "$0")"
+basename="$(basename -- "$0")"
+readonly basename
 
 warn() {
 	printf '%s: %s\n' "$basename" "$*" >&2
