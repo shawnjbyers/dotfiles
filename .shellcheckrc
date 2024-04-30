@@ -1,0 +1,10 @@
+enable=all
+severity=style
+enable=check-sourced
+enable=external-sources
+
+# Do not suggest ${VAR} instead of $VAR
+disable=SC2250
+
+# Allow local in POSIX sh.
+disable=SC3043
