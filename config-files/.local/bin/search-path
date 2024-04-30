@@ -1,29 +1,33 @@
 #!/usr/bin/env python3
+"""Search the $PATH for a pattern."""
+
+__version__ = '0.1.0'
 
 import argparse
 import os
 import shlex
-import subprocess
-import sys
+import subprocess as sp
 
-cmd_name = 'search-path'
-version = '0.1.0'
+COMMAND_NAME = 'search-path'
 
-def main():
+def main() -> None:
+    """Runs as the entry point of the script."""
+
     parser = argparse.ArgumentParser(
-        prog=cmd_name,
+        prog=COMMAND_NAME,
         description='Search the path for a pattern',
-        allow_abbrev=False
-    )
+        allow_abbrev=False,
+        )
 
     parser.add_argument(
-        '-V', '--version', action='version', version=f'%(prog)s {version}'
-    )
+        '-V', '--version', action='version',
+        version=f'%(prog)s {__version__}',
+        )
 
     parser.add_argument(
         'search_pattern',
-        help='a POSIX extended regular expression (ERE)'
-    )
+        help='a POSIX extended regular expression (ERE)',
+        )
 
     # TODO: Add extra options.
     # parser.add_argument('-E', '--extended-regexp', ???) # default
@@ -38,15 +42,13 @@ def main():
         quoted_pattern = shlex.quote(args.search_pattern)
         grep_cmd = f'grep -E -- {quoted_pattern}'
         full_cmd = f'{ls_cmd} | {grep_cmd}'
+        cmd_args = ['sh', '-c', full_cmd]
 
-        cmd_proc = subprocess.Popen(
-            ['sh', '-c', full_cmd],
-            stdout=subprocess.PIPE
-        )
-        cmd_out, cmd_err = cmd_proc.communicate()
-        file_lines = cmd_out.decode('utf-8').splitlines()
-        for line in file_lines:
-            print(pathdir + '/' + line)
+        with sp.Popen(cmd_args, stdout=sp.PIPE) as cmd_proc:
+            cmd_out, _ = cmd_proc.communicate()
+            file_lines = cmd_out.decode('utf-8').splitlines()
+            for line in file_lines:
+                print(pathdir + '/' + line)
 
 if __name__ == '__main__':
     main()
