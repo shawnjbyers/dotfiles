@@ -1,43 +1,47 @@
 #!/usr/bin/env python3
+'''Executes a Vimscript (.vim) file.
 
-import argparse
-import os
-import shlex
-import sys
-
-cmd_name = 'vimscript-run'
-version = '0.1.0'
-description = '''
-Executes a Vimscript (.vim) file.
 Put this at the top of your file to use:
 #!/usr/bin/env vimscript-run
 '''
 
-def main():
+__version__ = '0.1.0'
+
+import argparse
+import os
+import shlex
+
+COMMAND_NAME = 'vimscript-run'
+
+def main() -> None:
+    """Runs as the entry point of the script."""
+
     parser = argparse.ArgumentParser(
-        prog=cmd_name,
-        description=description,
-        allow_abbrev=False
-    )
+        prog=COMMAND_NAME,
+        description=__doc__,
+        allow_abbrev=False,
+        )
 
     parser.add_argument(
-        '-V', '--version', action='version', version=f'%(prog)s {version}'
-    )
+        '-V', '--version', action='version',
+        version=f'%(prog)s {__version__}',
+        )
 
-    parser.add_argument('vimscript_file', help='a Vimscript (.vim) file')
+    parser.add_argument('vimscript_file',
+                        help='a Vimscript (.vim) file')
 
     args = parser.parse_args()
 
-    with open(args.vimscript_file) as vsf:
+    with open(args.vimscript_file, encoding='utf-8') as vsf:
         vsf_lines = vsf.readlines()
 
-    vsf_lines = map(lambda l: ':' + l, vsf_lines)
+    vsf_lines = [':' + l for l in vsf_lines]
     vsf_text = ''.join(vsf_lines)
 
     os.execvp(
         'bash',
         ['bash', '-c', f'vim -s <(echo {shlex.quote(vsf_text)})']
-    )
+        )
 
 if __name__ == '__main__':
     main()
