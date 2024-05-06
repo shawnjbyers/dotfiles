@@ -33,13 +33,39 @@ else
 fi
 )
 
+load_nvm_command() {
+  export NVM_DIR="${HOME}/.nvm"
+  [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh"
+}
+
+load_nvm_completion() {
+  [ -s "${NVM_DIR}/bash_completion" ] && \. "${NVM_DIR}/bash_completion"
+}
+
+load_nvm() {
+  load_nvm_command && load_nvm_completion
+}
+
 if is_interactive; then
   user_id="$(id -u)" || {
     user_id='0'
     echo 'shellrc: id failed' >&2
   }
 
+  if is_zsh; then
+    # Add directories to the front of $PATH for node that nvm would have
+    # added.
+    setopt nullglob
+    for entry in "${HOME}/.nvm/versions/node/"*/bin; do
+      PATH="${entry}:${PATH}"
+    done
+    unsetopt nullglob
+  fi
+
   if is_bash; then
+    load_nvm || {
+      echo 'shellrc: failed to load nvm' >&2
+    }
     set -o vi # set vi keybindings
     if command -v bash > /dev/null 2>&1; then
       if SHELL="$(command -v bash)"; then
