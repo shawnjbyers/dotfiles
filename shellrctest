@@ -22,7 +22,7 @@ if [ "${dname}" = '' ]; then
   printf '%s: could not find dirname\n' "${bname}" >&2
   exit 1
 fi
-fname="${dname}"'/shellrc.sh'
+fname="${dname}"'/config-files/.zshrc'
 
 [ -f "${fname}" ] || {
   printf '%s: could not find file %s\n' "${bname}" "${fname}" >&2
