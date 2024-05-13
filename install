@@ -2,158 +2,19 @@
 
 set -eu
 
-readonly ex_ok=0
-readonly ex_failure=1 # generic failure
-readonly ex_usage=64 # command line usage error
-readonly ex_software=70 # internal error
+readonly command_name="install"
+dotfilesdir="$(dirname -- "$0")"
+readonly dotfilesdir
 
-bname="$(basename -- "$0")" || {
-  bname="$0"
-  printf '%s: basename failed\n' "${bname}" >&2
-  exit "${ex_failure}"
-}
+readonly config_files="${dotfilesdir}/config-files"
+readonly mypy_cache="${config_files}/.local/bin/.mypy_cache"
 
-dname="$(dirname -- "$0")" || {
-  printf '%s: dirname failed\n' "${bname}" >&2
-  exit "${ex_failure}"
-}
-
-self="$$"
-
-print_usage() (
-printf 'usage: %s [-s source-dir] [-t target-dir]\n' "${bname}" >&2
-)
-
-pipe_or_die() (
-if [ $# = 0 ]; then
-  printf '%s: pipe_or_die: internal error: invalid usage\n' "${bname}" >&2
-  kill -- "${self}" || {
-    printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
-  }
-  exit "${ex_software}"
+if [ -e "$mypy_cache" ]
+then
+	rm -r -- "$mypy_cache"
 fi
 
-command_name="$1"
+cd -- "$config_files"
+tar --create --file=- . | (cd -- ~ && tar --extract --file=-)
 
-"$@" || {
-  printf '%s: %s: command failed\n' "${bname}" "${command_name}" >&2
-  kill -- "${self}" || {
-    printf '%s: pipe_or_die: internal error: failed to kill self\n' "${bname}" >&2
-  }
-  exit "${ex_software}"
-}
-)
-
-install_directory() (
-if [ $# -ne 2 ]; then
-  printf '%s: internal error: install_directory: bad usage\n' "${bname}" >&2
-  exit "${ex_software}"
-fi
-
-source_folder="$1"
-dest_folder="$2"
-
-pipe_or_die ls -A1 -- "${source_folder}" | while read -r entry; do
-  entry_path="${source_folder}"/"${entry}"
-  if ! [ -e "${entry_path}" ]; then
-    printf '%s: could not find file %s\n' "${bname}" "${entry_path}" >&2
-    exit "${ex_failure}"
-  fi
-
-  if [ -f "${entry_path}" ]; then
-    cp -- "${entry_path}" "${dest_folder}/${entry}" || {
-      printf '%s: cp failed\n' "${bname}" >&2
-      exit "${ex_failure}"
-    }
-  elif [ -d "${entry_path}" ]; then
-    if [ -e "${entry_path}"/.recursive-install ]; then
-      {
-        cat -- "${dname}"/template-install.sh "${entry_path}"/install.sh > "${entry_path}"/install
-        chmod -- u+x "${entry_path}"/install
-        "${entry_path}"/install -s "${entry_path}" -t "${dest_folder}"
-      } || {
-        printf '%s: recursive install failed in %s\n' "${bname}" "${entry_path}" >&2
-        exit "${ex_failure}"
-      }
-    else
-      new_dest_folder="${dest_folder}/${entry}"
-      if ! [ -d "${new_dest_folder}" ]; then
-        mkdir -- "${new_dest_folder}" || {
-          printf '%s: %s: copying directory failed\n' "${bname}" "${new_dest_folder}" >&2
-          exit "${ex_failure}"
-        }
-      fi
-      install_directory "${entry_path}" "${new_dest_folder}" || exit $?
-    fi
-  else
-    printf '%s: found irregular directory entry %s\n' \
-      "${bname}" "${entry_path}" >&2
-    exit "${ex_failure}"
-  fi
-done || exit $?
-)
-
-sflag=''
-tflag=''
-while getopts 's:t:' name; do
-  case "${name}" in
-    s)
-      sflag=1
-      sval="${OPTARG}"
-      ;;
-    t)
-      tflag=1
-      tval="${OPTARG}"
-      ;;
-    *)
-      print_usage
-      exit "${ex_usage}"
-      ;;
-  esac
-done
-shift $((OPTIND - 1))
-
-if [ 0 -ne $# ]; then
-  print_usage
-  exit "${ex_usage}"
-fi
-
-if [ "${sflag}" = '' ]; then
-  sval="$(dirname -- "$0" && printf 'x')" || {
-    printf '%s: dirname failed\n' "${bname}" >&2
-    exit "${ex_failure}"
-  }
-  sval="${sval%??}" # strip trailing \nx
-
-  if [ "${sval}" = '' ]; then
-    printf '%s: could not find dirname\n' "${bname}" >&2
-    exit "${ex_failure}"
-  fi
-fi
-
-if [ "${tflag}" = '' ]; then
-  if [ "${HOME-}" = '' ]; then
-    printf '%s: could not find HOME directory\n' "${bname}" >&2
-    exit "${ex_failure}"
-  fi
-  tval="${HOME}"
-fi
-
-if ! [ -d "${sval}" ]; then
-  printf '%s: %s is not a directory\n' "${bname}" "${sval}" >&2
-  exit "${ex_failure}"
-fi
-if ! [ -d "${tval}" ]; then
-  printf '%s: %s is not a directory\n' "${bname}" "${tval}" >&2
-  exit "${ex_failure}"
-fi
-
-source_folder="${sval}"'/config-files'
-if ! [ -d "${source_folder}" ]; then
-  printf '%s: %s is not a directory\n' "${bname}" "${source_folder}" >&2
-  exit "${ex_failure}"
-fi
-
-install_directory "${source_folder}" "${tval}" || exit $?
-
-printf '%s: installation successful\n' "${bname}" >&2
+printf '%s: Installation successful.\n' "$command_name"
