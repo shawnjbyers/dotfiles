@@ -426,12 +426,11 @@ if is_interactive; then
   # # --color=auto: colorize output when printing to a terminal
   # MacOS: diff
 
-  # POSIX: grep -E -i
+  # POSIX: grep -E
   # # -E: use extended regular expressions
-  # # -i: ignore case when matching
-  # GNU coreutils: grep -E -i -I --color=auto
+  # GNU coreutils: grep -E -I --color=auto
   # # --color=auto: colorize output when printing to a terminal
-  # MacOS: grep -E -i -I --color=auto
+  # MacOS: grep -E -I --color=auto
 
   # POSIX: ls -F -A
   # # -F:
@@ -463,7 +462,7 @@ if is_interactive; then
 
   if using_coreutils gnu; then
     alias diff='diff --color=auto'
-    alias grep='grep -i -I --color=auto'
+    alias grep='grep -I --color=auto'
 
     # compliant: ISO 8601
     alias ls='ls -F -A -h --color=auto --time-style=+'\''%FT%T%z'\'
@@ -471,14 +470,14 @@ if is_interactive; then
 
   elif using_coreutils macos; then
     alias diff='diff'
-    alias grep='grep -i -I --color=auto'
+    alias grep='grep -I --color=auto'
     alias ls='ls -F -A'
     alias ls='ls -F -A -h -e -G -'\''@'\'
     alias lsna='command ls -F -h -e -G -'\''@'\'
   else
     # using POSIX
     alias diff='diff'
-    alias grep='grep -i'
+    # alias grep='grep'
     alias ls='ls -F -A'
     alias lsna='command ls -F'
   fi
